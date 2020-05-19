@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style type="text/css">
+
+.title {
+        color: #6161d0;
+        font-family: Ubuntu Mono;
+        font-size: 26px;
+        font-weight: bold;
+}
+
+pre {
+        color: #000000;
+        font-family: Ubuntu Mono;
+        font-size: 16px;
+}
+
+.optitle {
+        color: #000000;
+        font-family:Ubuntu Mono;
+        font-size: 22px;
+        font-weight: bold;
+}
+
+a{
+  color: #6161d0;
+  font-weight: bold;
+  font-family: Ubuntu Mono;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+table {
+  border-collapse: collapse;
+  color: #000000;
+  font-family: Ubuntu Mono;
+  font-size: 14px;
+}
+
+td,th{
+  vertical-align:middle;
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 4px;
+}
+</style>
+</head>
+<body>
+<pre>
+<span class="title" id="description">Description</span>
+
+        PC  .... Program counter     (16 bit)
+        PCH .... PC High             (8 bit)
+        PCL .... PC Low              (8 bit)
+        AC  .... Accumulator         (8 bit)
+        X   .... X register          (8 bit)
+        Y   .... Y register          (8 bit)
+        SR  .... Status register     (8 bit)
+        SP  .... Stack pointer       (8 bit)
+        M   .... Memory              (16 bit)
+        MH  .... High byte of Memory (8 bit)
+        dd  .... One-byte signed displacement
+
+        Oper.... Operand
+        #   .... Immediate Addressing Mode
+        +   .... Add
+        -   .... Subtract
+        -&gt;  .... Transfer To
+        &lt;-  .... Transfer To
+
+        SR Flags (bit 7 to bit 0)
+        ---------------------------
+        N   .... Negative flag (1 when result is negative)
+        V   .... Overflow flag (1 on signed overflow)
+        B   .... Break flag (1 when interupt was caused by a BRK)
+        D   .... Decimal flag (1 when CPU in BCD mode)
+        I   .... IRQ flag (when 1, no interupts will occur (exceptions are IRQs forced by BRK and NMIs))
+        Z   .... Zero flag (1 when all bits of a result are 0)
+        C   .... Carry flag (1 on unsigned overflow)
+        +   .... Modified
+        -   .... Not Modified
+        1   .... Set
+        0   .... Cleared
+        M6  .... Memory Bit 6
+        M7  .... Memory Bit 7
+
+
+<span class="title" id="standart">6502/6510 Opcodes</span>
+
+<b>Logical And Arithmetic Commands</b>
+
+    ORA, AND, EOR, ADC, SBC, CMP, CPX, CPY, DEC,
+    DEX, DEY, INC, INX, INY, ASL, ROL, LSR, ROR
+
+<b>Move Commands</b>
+
+    LDA, STA, LDX, STX, LDY, STY, TAX, TXA, TAY,
+    TYA, TSX, TXS, PLA, PHA, PHP, PLP
+
+<b>Jump/Flag Commands</b>
+
+    BPL, BMI, BVC, BVS, BCC, BCS, BNE, BEQ, BRK,
+    RTI, JSR, JMP, RTS, BIT, CLC, SEC, CLD, SED,
+    CLI, SEI, CLV, NOP
+
+</pre>
+<TABLE cellPadding=4 cellspacing=8 border=0 >
+  <TBODY>
+  <TR>
+    <TD align="center"><A
+    href="#ADC">ADC</A></TD>
+    <TD align="center"><A
+    href="#AND">AND</A></TD>
+    <TD align="center"><A
+    href="#ASL">ASL</A></TD>
+    <TD align="center"><A
+    href="#BCC">BCC</A></TD>
+    <TD align="center"><A
+    href="#BCS">BCS</A></TD>
+    <TD align="center"><A
+    href="#BEQ">BEQ</A></TD>
+    <TD align="center"><A
+    href="#BIT">BIT</A></TD>
+    <TD align="center"><A
+    href="#BMI">BMI</A></TD>
+    <TD align="center"><A
+    href="#BNE">BNE</A></TD>
+    <TD align="center"><A
+    href="#BPL">BPL</A></TD>
+    <TD align="center"><A
+    href="#BRK">BRK</A></TD>
+    <TD align="center"><A
+    href="#BVC">BVC</A></TD>
+    <TD align="center"><A
+    href="#BVS">BVS</A></TD>
+    <TD align="center"><A
+    href="#CLC">CLC</A></TD></TR>
+  <TR>
+    <TD align="center"><A
+    href="#CLD">CLD</A></TD>
+    <TD align="center"><A
+    href="#CLI">CLI</A></TD>
+    <TD align="center"><A
+    href="#CLV">CLV</A></TD>
+    <TD align="center"><A
+    href="#CMP">CMP</A></TD>
+    <TD align="center"><A
+    href="#CPX">CPX</A></TD>
+    <TD align="center"><A
+    href="#CPY">CPY</A></TD>
+    <TD align="center"><A
+    href="#DEC">DEC</A></TD>
+    <TD align="center"><A
+    href="#DEX">DEX</A></TD>
+    <TD align="center"><A
+    href="#DEY">DEY</A></TD>
+    <TD align="center"><A
+    href="#EOR">EOR</A></TD>
+    <TD align="center"><A
+    href="#INC">INC</A></TD>
+    <TD align="center"><A
+    href="#INX">INX</A></TD>
+    <TD align="center"><A
+    href="#INY">INY</A></TD>
+    <TD align="center"><A
+    href="#JMP">JMP</A></TD></TR>
+  <TR>
+    <TD align="center"><A
+    href="#JSR">JSR</A></TD>
+    <TD align="center"><A
+    href="#LDA">LDA</A></TD>
+    <TD align="center"><A
+    href="#LDX">LDX</A></TD>
+    <TD align="center"><A
+    href="#LDY">LDY</A></TD>
+    <TD align="center"><A
+    href="#LSR">LSR</A></TD>
+    <TD align="center"><A
+    href="#NOP">NOP</A></TD>
+    <TD align="center"><A
+    href="#ORA">ORA</A></TD>
+    <TD align="center"><A
+    href="#PHA">PHA</A></TD>
+    <TD align="center"><A
+    href="#PHP">PHP</A></TD>
+    <TD align="center"><A
+    href="#PLA">PLA</A></TD>
+    <TD align="center"><A
+    href="#PLP">PLP</A></TD>
+    <TD align="center"><A
+    href="#ROL">ROL</A></TD>
+    <TD align="center"><A
+    href="#ROR">ROR</A></TD>
+    <TD align="center"><A
+    href="#RTI">RTI</A></TD></TR>
+  <TR>
+    <TD align="center"><A
+    href="#RTS">RTS</A></TD>
+    <TD align="center"><A
+    href="#SBC">SBC</A></TD>
+    <TD align="center"><A
+    href="#SEC">SEC</A></TD>
+    <TD align="center"><A
+    href="#SED">SED</A></TD>
+    <TD align="center"><A
+    href="#SEI">SEI</A></TD>
+    <TD align="center"><A
+    href="#STA">STA</A></TD>
+    <TD align="center"><A
+    href="#STX">STX</A></TD>
+    <TD align="center"><A
+    href="#STY">STY</A></TD>
+    <TD align="center"><A
+    href="#TAX">TAX</A></TD>
+    <TD align="center"><A
+    href="#TAY">TAY</A></TD>
+    <TD align="center"><A
+    href="#TSX">TSX</A></TD>
+    <TD align="center"><A
+    href="#TXA">TXA</A></TD>
+    <TD align="center"><A
+    href="#TXS">TXS</A></TD>
+    <TD align="center"><A
+    href="#TYA">TYA</A></TD></TR></TBODY></TABLE>
+
+<hr><pre><span class="optitle"  id="ADC">ADC</span><br>Add Memory to Accumulator with Carry
+
+     A + M + C -&gt; A, C                N Z C I D V
+                                      + + + - - +
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     immediate     ADC #oper     69    2     2
+     zeropage      ADC oper      65    2     3
+     zeropage,X    ADC oper,X    75    2     4
+     absolute      ADC oper      6D    3     4
+     absolute,X    ADC oper,X    7D    3     4*
+     absolute,Y    ADC oper,Y    79    3     4*
+     (indirect,X)  ADC (oper,X)  61    2     6
+     (indirect),Y  ADC (oper),Y  71    2     5*
+
+     *  add 1 to cycles if page boundery is crossed
+     <span><a href="#ADC2">65C02 modifications</a></span>
+
+
+ </pre><hr><pre><span class="optitle"  id="AND">AND</span><br>AND Memory with Accumulator
+
+     A AND M -&gt; A                     N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     immediate     AND #oper     29    2     2
+     zeropage      AND oper      25    2     3
+     zeropage,X    AND oper,X    35    2     4
+     absolute      AND oper      2D    3     4
+     absolute,X    AND oper,X    3D    3     4*
+     absolute,Y    AND oper,Y    39    3     4*
+     (indirect,X)  AND (oper,X)  21    2     6
+     (indirect),Y  AND (oper),Y  31    2     5*
+
+     *  add 1 to cycles if page boundery is crossed
+     <span><a href="#AND2">65C02 modifications</a></span>
+
+
+ </pre><hr><pre><span class="optitle"  id="ASL">ASL</span><br>Shift Left One Bit (Memory or Accumulator)
+
+     C &lt;- [76543210] &lt;- 0             N Z C I D V
+                                      + + + - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     accumulator   ASL A         0A    1     2
+     zeropage      ASL oper      06    2     5
+     zeropage,X    ASL oper,X    16    2     6
+     absolute      ASL oper      0E    3     6
+     absolute,X    ASL oper,X    1E    3     7
+
+
+ </pre><hr><pre><span class="optitle"  id="BCC">BCC</span><br>Branch on Carry Clear
+
+     branch on C = 0                  N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     relative      BCC oper      90    2     2**
+
+    ** add 1 to cycles if branch occurs on same page
+       add 2 to cycles if branch occurs to different page
+
+ </pre><hr><pre><span class="optitle"  id="BCS">BCS</span><br>Branch on Carry Set
+
+     branch on C = 1                  N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     relative      BCS oper      B0    2     2**
+
+    ** add 1 to cycles if branch occurs on same page
+       add 2 to cycles if branch occurs to different page
+
+ </pre><hr><pre><span class="optitle"  id="BEQ">BEQ</span><br>Branch on Result Zero
+
+     branch on Z = 1                  N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     relative      BEQ oper      F0    2     2**
+
+    ** add 1 to cycles if branch occurs on same page
+       add 2 to cycles if branch occurs to different page
+
+ </pre><hr><pre><span class="optitle"  id="BIT">BIT</span><br>Test Bits in Memory with Accumulator
+
+     bits 7 and 6 of operand are transfered to bit 7 and 6 of SR (N,V);
+     the zeroflag is set to the result of operand AND accumulator.
+
+     A AND M, M7 -&gt; N, M6 -&gt; V        N Z C I D V
+                                     M7 + - - - M6
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     zeropage      BIT oper      24    2     3
+     absolute      BIT oper      2C    3     4
+
+    <span><a href="#BIT2">65C02 modifications</a></span>
+
+
+ </pre><hr><pre><span class="optitle"  id="BMI">BMI</span><br>Branch on Result Minus
+
+     branch on N = 1                  N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     relative      BMI oper      30    2     2**
+
+    ** add 1 to cycles if branch occurs on same page
+       add 2 to cycles if branch occurs to different page
+
+ </pre><hr><pre><span class="optitle"  id="BNE">BNE</span><br>Branch on Result not Zero
+
+     branch on Z = 0                  N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     relative      BNE oper      D0    2     2**
+
+    ** add 1 to cycles if branch occurs on same page
+       add 2 to cycles if branch occurs to different page
+
+ </pre><hr><pre><span class="optitle"  id="BPL">BPL</span><br>Branch on Result Plus
+
+     branch on N = 0                  N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     relative      BPL oper      10    2     2**
+
+    ** add 1 to cycles if branch occurs on same page
+       add 2 to cycles if branch occurs to different page
+
+ </pre><hr><pre><span class="optitle"  id="BRK">BRK</span><br>Force Break
+
+     interrupt,                       N Z C I D V
+     push PC+2, push SR               - - - 1 - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       BRK           00    1     7
+
+
+ </pre><hr><pre><span class="optitle"  id="BVC">BVC</span><br>Branch on Overflow Clear
+
+     branch on V = 0                  N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     relative      BVC oper      50    2     2**
+
+    ** add 1 to cycles if branch occurs on same page
+       add 2 to cycles if branch occurs to different page
+
+ </pre><hr><pre><span class="optitle"  id="BVS">BVS</span><br>Branch on Overflow Set
+
+     branch on V = 1                  N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     relative      BVS oper      70    2     2**
+
+    ** add 1 to cycles if branch occurs on same page
+       add 2 to cycles if branch occurs to different page
+
+ </pre><hr><pre><span class="optitle"  id="CLC">CLC</span><br>Clear Carry Flag
+
+     0 -&gt; C                           N Z C I D V
+                                      - - 0 - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       CLC           18    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="CLD">CLD</span><br>Clear Decimal Mode
+
+     0 -&gt; D                           N Z C I D V
+                                      - - - - 0 -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       CLD           D8    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="CLI">CLI</span><br>Clear Interrupt Disable Bit
+
+     0 -&gt; I                           N Z C I D V
+                                      - - - 0 - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       CLI           58    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="CLV">CLV</span><br>Clear Overflow Flag
+
+     0 -&gt; V                           N Z C I D V
+                                      - - - - - 0
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       CLV           B8    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="CMP">CMP</span><br>Compare Memory with Accumulator
+
+     A - M                            N Z C I D V
+                                    + + + - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     immediate     CMP #oper     C9    2     2
+     zeropage      CMP oper      C5    2     3
+     zeropage,X    CMP oper,X    D5    2     4
+     absolute      CMP oper      CD    3     4
+     absolute,X    CMP oper,X    DD    3     4*
+     absolute,Y    CMP oper,Y    D9    3     4*
+     (indirect,X)  CMP (oper,X)  C1    2     6
+     (indirect),Y  CMP (oper),Y  D1    2     5*
+
+    *  add 1 to cycles if page boundery is crossed
+    <span><a href="#CMP2">65C02 modifications</a></span>
+
+
+ </pre><hr><pre><span class="optitle"  id="CPX">CPX</span><br>Compare Memory and Index X
+
+     X - M                            N Z C I D V
+                                      + + + - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     immediate     CPX #oper     E0    2     2
+     zeropage      CPX oper      E4    2     3
+     absolute      CPX oper      EC    3     4
+
+
+ </pre><hr><pre><span class="optitle"  id="CPY">CPY</span><br>Compare Memory and Index Y
+
+     Y - M                            N Z C I D V
+                                      + + + - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     immediate     CPY #oper     C0    2     2
+     zeropage      CPY oper      C4    2     3
+     absolute      CPY oper      CC    3     4
+
+
+ </pre><hr><pre><span class="optitle"  id="DEC">DEC</span><br>Decrement Memory by One
+
+     M - 1 -&gt; M                       N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     zeropage      DEC oper      C6    2     5
+     zeropage,X    DEC oper,X    D6    2     6
+     absolute      DEC oper      CE    3     6
+     absolute,X    DEC oper,X    DE    3     7
+
+    <span><a href="#DEC2">65C02 modifications</a></span>
+
+
+ </pre><hr><pre><span class="optitle"  id="DEX">DEX</span><br>Decrement Index X by One
+
+     X - 1 -&gt; X                       N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       DEX           CA    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="DEY">DEY</span><br>Decrement Index Y by One
+
+     Y - 1 -&gt; Y                       N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       DEY           88    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="EOR">EOR</span><br>Exclusive-OR Memory with Accumulator
+
+     A EOR M -&gt; A                     N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     immediate     EOR #oper     49    2     2
+     zeropage      EOR oper      45    2     3
+     zeropage,X    EOR oper,X    55    2     4
+     absolute      EOR oper      4D    3     4
+     absolute,X    EOR oper,X    5D    3     4*
+     absolute,Y    EOR oper,Y    59    3     4*
+     (indirect,X)  EOR (oper,X)  41    2     6
+     (indirect),Y  EOR (oper),Y  51    2     5*
+
+    *  add 1 to cycles if page boundery is crossed
+    <span><a href="#EOR2">65C02 modifications</a></span>
+
+
+ </pre><hr><pre><span class="optitle"  id="INC">INC</span><br>Increment Memory by One
+
+     M + 1 -&gt; M                       N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     zeropage      INC oper      E6    2     5
+     zeropage,X    INC oper,X    F6    2     6
+     absolute      INC oper      EE    3     6
+     absolute,X    INC oper,X    FE    3     7
+
+    <span><a href="#INC2">65C02 modifications</a></span>
+
+
+ </pre><hr><pre><span class="optitle"  id="INX">INX</span><br>Increment Index X by One
+
+     X + 1 -&gt; X                       N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       INX           E8    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="INY">INY</span><br>Increment Index Y by One
+
+     Y + 1 -&gt; Y                       N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       INY           C8    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="JMP">JMP</span><br>Jump to New Location
+
+     (PC+1) -&gt; PCL                    N Z C I D V
+     (PC+2) -&gt; PCH                    - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     absolute      JMP oper      4C    3     3
+     indirect      JMP (oper)    6C    3     5
+
+    <span><a href="#JMP2">65C02 modifications</a></span>
+
+
+ </pre><hr><pre><span class="optitle"  id="JSR">JSR</span><br>Jump to New Location Saving Return Address
+
+     push (PC+2),                     N Z C I D V
+     (PC+1) -&gt; PCL                    - - - - - -
+     (PC+2) -&gt; PCH
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     absolute      JSR oper      20    3     6
+
+
+ </pre><hr><pre><span class="optitle"  id="LDA">LDA</span><br>Load Accumulator with Memory
+
+     M -&gt; A                           N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     immediate     LDA #oper     A9    2     2
+     zeropage      LDA oper      A5    2     3
+     zeropage,X    LDA oper,X    B5    2     4
+     absolute      LDA oper      AD    3     4
+     absolute,X    LDA oper,X    BD    3     4*
+     absolute,Y    LDA oper,Y    B9    3     4*
+     (indirect,X)  LDA (oper,X)  A1    2     6
+     (indirect),Y  LDA (oper),Y  B1    2     5*
+
+    *  add 1 to cycles if page boundery is crossed
+    <span><a href="#LDA2">65C02 modifications</a></span>
+
+
+ </pre><hr><pre><span class="optitle"  id="LDX">LDX</span><br>Load Index X with Memory
+
+     M -&gt; X                           N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     immediate     LDX #oper     A2    2     2
+     zeropage      LDX oper      A6    2     3
+     zeropage,Y    LDX oper,Y    B6    2     4
+     absolute      LDX oper      AE    3     4
+     absolute,Y    LDX oper,Y    BE    3     4*
+
+    *  add 1 to cycles if page boundery is crossed
+
+
+ </pre><hr><pre><span class="optitle"  id="LDY">LDY</span><br>Load Index Y with Memory
+
+     M -&gt; Y                           N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     immediate     LDY #oper     A0    2     2
+     zeropage      LDY oper      A4    2     3
+     zeropage,X    LDY oper,X    B4    2     4
+     absolute      LDY oper      AC    3     4
+     absolute,X    LDY oper,X    BC    3     4*
+
+    *  add 1 to cycles if page boundery is crossed
+
+
+ </pre><hr><pre><span class="optitle"  id="LSR">LSR</span><br>Shift One Bit Right (Memory or Accumulator)
+
+     0 -&gt; [76543210] -&gt; C             N Z C I D V
+                                      0 + + - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     accumulator   LSR A         4A    1     2
+     zeropage      LSR oper      46    2     5
+     zeropage,X    LSR oper,X    56    2     6
+     absolute      LSR oper      4E    3     6
+     absolute,X    LSR oper,X    5E    3     7
+
+
+ </pre><hr><pre><span class="optitle"  id="NOP">NOP</span><br>No Operation
+
+     ---                              N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       NOP           EA    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="ORA">ORA</span><br>OR Memory with Accumulator
+
+     A OR M -&gt; A                      N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     immediate     ORA #oper     09    2     2
+     zeropage      ORA oper      05    2     3
+     zeropage,X    ORA oper,X    15    2     4
+     absolute      ORA oper      0D    3     4
+     absolute,X    ORA oper,X    1D    3     4*
+     absolute,Y    ORA oper,Y    19    3     4*
+     (indirect,X)  ORA (oper,X)  01    2     6
+     (indirect),Y  ORA (oper),Y  11    2     5*
+
+    *  add 1 to cycles if page boundery is crossed
+    <span><a href="#ORA2">65C02 modifications</a></span>
+
+
+ </pre><hr><pre><span class="optitle"  id="PHA">PHA</span><br>Push Accumulator on Stack
+
+     push A                           N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       PHA           48    1     3
+
+
+ </pre><hr><pre><span class="optitle"  id="PHP">PHP</span><br>Push Processor Status on Stack
+
+     push SR                          N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       PHP           08    1     3
+
+
+ </pre><hr><pre><span class="optitle"  id="PLA">PLA</span><br>Pull Accumulator from Stack
+
+     pull A                           N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       PLA           68    1     4
+
+
+ </pre><hr><pre><span class="optitle"  id="PLP">PLP</span><br>Pull Processor Status from Stack
+
+     pull SR                          N Z C I D V
+                                      from stack
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       PLP           28    1     4
+
+
+ </pre><hr><pre><span class="optitle"  id="ROL">ROL</span><br>Rotate One Bit Left (Memory or Accumulator)
+
+     C &lt;- [76543210] &lt;- C             N Z C I D V
+                                      + + + - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     accumulator   ROL A         2A    1     2
+     zeropage      ROL oper      26    2     5
+     zeropage,X    ROL oper,X    36    2     6
+     absolute      ROL oper      2E    3     6
+     absolute,X    ROL oper,X    3E    3     7
+
+
+ </pre><hr><pre><span class="optitle"  id="ROR">ROR</span><br>Rotate One Bit Right (Memory or Accumulator)
+
+     C -&gt; [76543210] -&gt; C             N Z C I D V
+                                      + + + - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     accumulator   ROR A         6A    1     2
+     zeropage      ROR oper      66    2     5
+     zeropage,X    ROR oper,X    76    2     6
+     absolute      ROR oper      6E    3     6
+     absolute,X    ROR oper,X    7E    3     7
+
+
+ </pre><hr><pre><span class="optitle"  id="RTI">RTI</span><br>Return from Interrupt
+
+     pull SR, pull PC                 N Z C I D V
+                                      from stack
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       RTI           40    1     6
+
+
+ </pre><hr><pre><span class="optitle"  id="RTS">RTS</span><br>Return from Subroutine
+
+     pull PC, PC+1 -&gt; PC              N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       RTS           60    1     6
+
+
+ </pre><hr><pre><span class="optitle"  id="SBC">SBC</span><br>Subtract Memory from Accumulator with Borrow
+
+     A - M - C -&gt; A                   N Z C I D V
+                                      + + + - - +
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     immediate     SBC #oper     E9    2     2
+     zeropage      SBC oper      E5    2     3
+     zeropage,X    SBC oper,X    F5    2     4
+     absolute      SBC oper      ED    3     4
+     absolute,X    SBC oper,X    FD    3     4*
+     absolute,Y    SBC oper,Y    F9    3     4*
+     (indirect,X)  SBC (oper,X)  E1    2     6
+     (indirect),Y  SBC (oper),Y  F1    2     5*
+
+    *  add 1 to cycles if page boundery is crossed
+    <span><a href="#SBC2">65C02 modifications</a></span>
+
+
+ </pre><hr><pre><span class="optitle"  id="SEC">SEC</span><br>Set Carry Flag
+
+     1 -&gt; C                           N Z C I D V
+                                      - - 1 - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       SEC           38    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="SED">SED</span><br>Set Decimal Flag
+
+     1 -&gt; D                           N Z C I D V
+                                      - - - - 1 -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       SED           F8    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="SEI">SEI</span><br>Set Interrupt Disable Status
+
+     1 -&gt; I                           N Z C I D V
+                                      - - - 1 - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       SEI           78    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="STA">STA</span><br>Store Accumulator in Memory
+
+     A -&gt; M                           N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     zeropage      STA oper      85    2     3
+     zeropage,X    STA oper,X    95    2     4
+     absolute      STA oper      8D    3     4
+     absolute,X    STA oper,X    9D    3     5
+     absolute,Y    STA oper,Y    99    3     5
+     (indirect,X)  STA (oper,X)  81    2     6
+     (indirect),Y  STA (oper),Y  91    2     6
+
+    <span><a href="#STA2">65C02 modifications</a></span>
+
+
+ </pre><hr><pre><span class="optitle"  id="STX">STX</span><br>Store Index X in Memory
+
+     X -&gt; M                           N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     zeropage      STX oper      86    2     3
+     zeropage,Y    STX oper,Y    96    2     4
+     absolute      STX oper      8E    3     4
+
+
+ </pre><hr><pre><span class="optitle"  id="STY">STY</span><br>Store Index Y in Memory
+
+     Y -&gt; M                           N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     zeropage      STY oper      84    2     3
+     zeropage,X    STY oper,X    94    2     4
+     absolute      STY oper      8C    3     4
+
+
+ </pre><hr><pre><span class="optitle"  id="TAX">TAX</span><br>Transfer Accumulator to Index X
+
+     A -&gt; X                           N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       TAX           AA    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="TAY">TAY</span><br>Transfer Accumulator to Index Y
+
+     A -&gt; Y                           N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       TAY           A8    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="TSX">TSX</span><br>Transfer Stack Pointer to Index X
+
+     SP -&gt; X                          N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       TSX           BA    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="TXA">TXA</span><br>Transfer Index X to Accumulator
+
+     X -&gt; A                           N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       TXA           8A    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="TXS">TXS</span><br>Transfer Index X to Stack Register
+
+     X -&gt; SP                          N Z C I D V
+                                      - - - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       TXS           9A    1     2
+
+
+ </pre><hr><pre><span class="optitle"  id="TYA">TYA</span><br>Transfer Index Y to Accumulator
+
+     Y -&gt; A                           N Z C I D V
+                                      + + - - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     implied       TYA           98    1     2
+
+
+
+<span class="title" id="illegal">6502/6510 Illegal Opcodes</span>
+
+To exclude the illegal opcodes from the instruction set,
+check "-excludeillegal" command line option setting from Tools/Settings menu.
+
+</pre>
+<TABLE cellPadding=4 cellspacing=8 border=0 >
+  <TBODY>
+  <TR>
+    <TD align="center"><A
+    href="#AHX">AHX</A></TD>
+    <TD align="center"><A
+    href="#ALR">ALR</A></TD>
+    <TD align="center"><A
+    href="#ANC">ANC</A></TD>
+    <TD align="center"><A
+    href="#ARR">ARR</A></TD>
+    <TD align="center"><A
+    href="#SAX">SAX</A></TD>
+    <TD align="center"><A
+    href="#DCP">DCP</A></TD>
+    <TD align="center"><A
+    href="#ISC">ISC</A></TD>
+    <TD align="center"><A
+    href="#LAS">LAS</A></TD>
+    <TD align="center"><A
+    href="#LAX">LAX</A></TD></TR>
+    <TR>
+    <TD align="center"><A
+    href="#RLA">RLA</A></TD>
+    <TD align="center"><A
+    href="#RRA">RRA</A></TD>
+    <TD align="center"><A
+    href="#SAX">SAX</A></TD>
+    <TD align="center"><A
+    href="#SHX">SHX</A></TD>
+    <TD align="center"><A
+    href="#SHY">SHY</A>
+    <TD align="center"><A
+    href="#SLO">SLO</A></TD>
+    <TD align="center"><A
+    href="#SRE">SRE</A></TD>
+    <TD align="center"><A
+    href="#TAS">TAS</A></TD>
+    <TD align="center"><A
+    href="#XAA">XAA</A></TD>
+   </TR></TBODY></TABLE>
+
+
+<hr><pre><span class="optitle"  id="SLO">SLO (ASO)</span><br>Shift left one bit in memory, then OR accumulator with memory.
+
+     M = M * 2, A = A OR M            N Z C I D V
+                                      + + + - - -
+
+     Addressing    Mnemonics    OPC  Bytes  Cycles
+     ---------------------------------------------
+     zeropage      SLO oper      07    2     5
+     zeropage,X    SLO oper,X    17    2     6
+     absolute      SLO oper      0F    3     6
+     absolute,X    SLO oper,X    1F    3     7
+     absolute,Y    SLO oper,Y    1B    3     7
+     (indirect,X)  SLO (oper,X)  03    2     8
+     (indirect),Y  SLO (oper),Y  13    2     8
+
+
+</pre><hr><pre><span class="optitle"  id="SRE">SRE (LSE)</span><br>Shift right one bit in memory, then EOR accumulator with memory.
+
+    M = M / 2, A = A EXOR M          N Z C I D V
+                                     + + + - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    zeropage      SRE oper      47    2     5
+    zeropage,X    SRE oper,X    57    2     6
+    absolute      SRE oper      4F    3     6
+    absolute,X    SRE oper,X    5F    3     7
+    absolute,Y    SRE oper,Y    5B    3     7
+    (indirect,X)  SRE (oper,X)  43    2     8
+    (indirect),Y  SRE (oper),Y  53    2     8
+
+
+</pre><hr><pre><span class="optitle"  id="RLA">RLA</span><br>Rotate one bit left in memory, then AND accumulator with memory.
+
+    M = M ROL, A = A AND M           N Z C I D V
+                                     + + + - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    zeropage      RLA oper      27    2     5
+    zeropage,X    RLA oper,X    37    2     6
+    absolute      RLA oper      2F    3     6
+    absolute,X    RLA oper,X    3F    3     7
+    absolute,Y    RLA oper,Y    3B    3     7
+    (indirect,X)  RLA (oper,X)  23    2     8
+    (indirect),Y  RLA (oper),Y  33    2     8
+
+
+</pre><hr><pre><span class="optitle"  id="RRA">RRA</span><br>Rotate one bit right in memory, then add memory to accumulator (with carry).
+
+    M = M ROR, A = A ADC M           N Z C I D V
+                                     + + + - - +
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    zeropage      RRA oper      67    2     5
+    zeropage,X    RRA oper,X    77    2     6
+    absolute      RRA oper      6F    3     6
+    absolute,X    RRA oper,X    7F    3     7
+    absolute,Y    RRA oper,Y    7B    3     7
+    (indirect,X)  RRA (oper,X)  63    2     8
+    (indirect),Y  RRA (oper),Y  73    2     8
+
+
+</pre><hr><pre><span class="optitle"  id="SAX">SAX (AAX) (AXS)</span><br>AND X register with accumulator and store result in memory.
+
+    M = A AND X                      N Z C I D V
+                                     - - - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    immediate     SAX #oper     CB    2     2
+    zeropage      SAX oper      87    2     3
+    zeropage,Y    SAX oper,Y    97    2     4
+    absolute      SAX oper      8F    3     4
+    (indirect,X)  SAX (oper,X)  83    2     6
+
+
+</pre><hr><pre><span class="optitle"  id="LAX">LAX</span><br>Load accumulator and X register with memory.
+
+    A = M, X = M                     N Z C I D V
+                                     + + - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    immediate***  LAX #oper     AB    2     2
+    zeropage      LAX oper      A7    2     3
+    zeropage,Y    LAX oper,Y    B7    2     4
+    absolute      LAX oper      AF    3     4
+    absolute,Y    LAX oper,Y    BF    3     4*
+    (indirect,X)  LAX (oper,X)  A3    2     6
+    (indirect),Y  LAX (oper),Y  B3    2     5*
+
+    *  add 1 to cycles if page boundery is crossed
+    *** Highly Unstable
+
+
+</pre><hr><pre><span class="optitle"  id="DCP">DCP (DCM)</span><br>Subtract 1 from memory (without borrow) and then CMPs the result with the A register.
+
+    M = M - 1, A - M                 N Z C I D V
+                                     + + + - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    zeropage      DCP oper      C7    2     5
+    zeropage,X    DCP oper,X    D7    2     6
+    absolute      DCP oper      CF    3     6
+    absolute,X    DCP oper,X    DF    3     7
+    absolute,Y    DCP oper,Y    DB    3     7
+    (indirect,X)  DCP (oper,X)  C3    2     8
+    (indirect),Y  DCP (oper),Y  D3    2     8
+
+
+</pre><hr><pre><span class="optitle"  id="ISC">ISC (ISB) (INS)</span><br>Increase memory by one, then subtract memory from accu-mulator (with borrow).
+
+    M = M + 1, A = A - M             N Z C I D V
+                                     + + + - - +
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    zeropage      ISC oper      E7    2     5
+    zeropage,X    ISC oper,X    F7    2     6
+    absolute      ISC oper      EF    3     6
+    absolute,X    ISC oper,X    FF    3     7
+    absolute,Y    ISC oper,Y    FB    3     7
+    (indirect,X)  ISC (oper,X)  E3    2     8
+    (indirect),Y  ISC (oper),Y  F3    2     8
+
+
+</pre><hr><pre><span class="optitle"  id="ANC">ANC (AAC)</span><br>AND byte with accumulator. If result is negative then carry is set.
+
+    A = A AND M                      N Z C I D V
+                                     + + + - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    immediate     ANC #oper     0B    2     2
+    immediate     ANC #oper     2B    2     2
+
+
+</pre><hr><pre><span class="optitle"  id="ALR">ALR (ASR)</span><br>AND byte with accumulator, then shift right one bit in accumulator.
+
+    A = A AND M, A = A / 2           N Z C I D V
+                                     + + + - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    immediate     ALR #oper     4B    2     2
+
+
+</pre><hr><pre><span class="optitle"  id="ARR">ARR</span><br>AND byte with accumulator, then rotate one bit right in accumulator and check bit 5 and 6:
+    If both bits are 1: set C, clear V.
+    If both bits are 0: clear C and V.
+    If only bit 5 is 1: set V, clear C.
+    If only bit 6 is 1: set C and V.
+
+    A = A AND M, A = A / 2           N Z C I D V
+                                     + + + - - +
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    immediate     ARR #oper     6B    2     2
+
+
+</pre><hr><pre><span class="optitle"  id="XAA">XAA (ANE)</span><br>The contents of the X register to the A register and then ANDs the A register with an immediate value.
+
+    A = X AND M                      N Z C I D V
+                                     + + - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    immediate***  XAA #oper     8B    2     2
+
+    *** Highly Unstable
+
+</pre><hr><pre><span class="optitle"  id="SHY">SHY (SAY) (SYA)</span><br>AND Y register with (the high byte of the target address of the OPER) + 1. Store the result in memory.
+
+    M = Y AND (MH + 1)               N Z C I D V
+                                     - - - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    absolute,Y*** SHY oper,Y    9C    3     5
+
+    *** Unstable in certain matters
+
+
+</pre><hr><pre><span class="optitle"  id="SHX">SHX (SXA) (XAS)</span><br>AND X register with (the high byte of the target address of the OPER) + 1. Store the result in memory.
+
+    M = X AND (MH + 1)               N Z C I D V
+                                     - - - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    absolute,X*** SHX oper,X    9E    3     5
+
+    *** Unstable in certain matters
+
+
+</pre><hr><pre><span class="optitle"  id="TAS">TAS (SHS) (XAS)</span><br>AND X register with accumulator and store result in stack pointer, then
+AND stack pointer with the high byte of the target address of the OPER + 1. Store result in memory.
+
+    S = X AND A, M = S AND (MH + 1)  N Z C I D V
+                                     - - - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    absolute,Y*** TAS oper,Y    9B    3     5
+
+    *** Unstable in certain matters
+
+
+</pre><hr><pre><span class="optitle"  id="LAS">LAS (LAR) (LAE)</span><br>AND memory with stack pointer, transfer result to accumulator, X register and stack pointer.
+
+    A,X,S = M AND S                  N Z C I D V
+                                     + + - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    absolute,Y    LAS oper,Y    BB    3     4*
+
+    *  add 1 to cycles if page boundery is crossed
+
+
+</pre><hr><pre><span class="optitle"  id="AHX">AHX (AXA) (SHA)</span><br>Stores the result of A AND X AND the high byte of the target address of the operand +1 in memory.
+
+    M = A AND X AND (MH + 1)         N Z C I D V
+                                     - - - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    absolute,Y*   ISC oper,Y    9F    3     5
+    (indirect,Y)* ISC (oper,Y)  93    2     6
+
+    * Unstable in certain matters
+
+
+</pre>
+
+<pre><span class="title" id="65c02opcodes">65C02 Opcodes</span>
+
+The 65C02 instruction set contains the standard 6502 mnemonics plus the below modifications.
+
+</pre><hr><pre><span class="optitle"  id="ADC2">ADC</span><br>Add Memory to Accumulator with Carry
+
+    A + M + C -&gt; A, C                N Z C I D V
+                                     + + + - - +
+
+    Addressing      Mnemonics    OPC  Bytes  Cycles
+    -----------------------------------------------
+    ind. zeropage   ADC (oper)    72    2     5
+
+    <span><a href="#ADC">6502 Instruction</a></span>
+
+
+</pre><hr><pre><span class="optitle"  id="AND2">AND</span><br>AND Memory with Accumulator
+
+    A AND M -&gt; A                     N Z C I D V
+                                     + + - - - -
+
+    Addressing      Mnemonics    OPC  Bytes  Cycles
+    -----------------------------------------------
+    ind. zeropage   AND (oper)    32    2     5
+
+    <span><a href="#AND">6502 Instruction</a></span>
+
+
+</pre><hr><pre><span class="optitle"  id="BBR">BBR</span><br>Branch on Bit Reset
+
+This a actually a set of 8 instructions.
+Each tests a specific bit of a byte held on zero page and causes a branch of the bit is reset.
+
+    branch on bit n reset            N Z C I D V
+                                     - - - - - -
+
+    Addressing         Mnemonics        OPC  Bytes  Cycles
+    ------------------------------------------------------
+    zeropage,relative  BBRn oper,dd*     nF*   3     2**
+
+    * 0 &le; n &le; 7
+    ** add 1 to cycles if branch occurs on same page
+
+
+</pre><hr><pre><span class="optitle"  id="BBS">BBS</span><br>Branch on Bit Set
+
+This a actually a set of 8 instructions.
+Each tests a specific bit of a byte held on zero page and causes a branch of the bit is set.
+
+    branch on bit n set              N Z C I D V
+                                     - - - - - -
+
+    Addressing         Mnemonics        OPC  Bytes  Cycles
+    ------------------------------------------------------
+    zeropage,relative  BBSn oper,dd*     mF*   3     2**
+
+    * 8 &le; m &le; F , 0 &le; n &le; 7
+    ** add 1 to cycles if branch occurs on same page
+
+
+</pre><hr><pre><span class="optitle"  id="BIT2">BIT</span><br>Test Bits in Memory with Accumulator
+
+bits 7 and 6 of operand are transfered to bit 7 and 6 of SR (N,V);
+the zeroflag is set to the result of operand AND accumulator.
+
+    A AND M, M7 -&gt; N, M6 -&gt; V        N Z C I D V
+                                    M7 + - - - M6
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    immediate     BIT #oper     89    2     3
+    zeropage,X    BIT oper,X    34    2     3
+    absolute,X    BIT oper,X    3C    3     4**
+
+    ** add 1 to cycles if branch occurs on same page
+    <span><a href="#BIT">6502 Instruction</a></span>
+
+
+</pre><hr><pre><span class="optitle"  id="BRA">BRA</span><br>Branch always
+
+Adds the relative displacement to the program counter to cause a branch to a new location.
+
+    branch always                    N Z C I D V
+                                     - - - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    relative      BRA oper      80    2     3**
+
+    ** add 1 to cycles if branch occurs on same page
+
+
+</pre><hr><pre><span class="optitle"  id="CMP2">CMP</span><br>Compare Memory with Accumulator
+
+    A - M                            N Z C I D V
+                                     + + + - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    ind. zeropage CMP (oper)    D2    2     5
+
+    <span><a href="#CMP">6502 Instruction</a></span>
+
+
+</pre><hr><pre><span class="optitle"  id="DEC2">DEC</span><br>Decrement Memory by One
+
+    M - 1 -&gt; M                       N Z C I D V
+                                     + + - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    implied       DEC           3A    1     2
+
+    <span><a href="#DEC">6502 Instruction</a></span>
+
+
+</pre><hr><pre><span class="optitle"  id="EOR2">EOR</span><br>Exclusive-OR Memory with Accumulator
+
+    A EOR M -&gt; A                     N Z C I D V
+                                     + + - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    zeropage      EOR (oper)    52    2     5
+
+    <span><a href="#EOR">6502 Instruction</a></span>
+
+
+</pre><hr><pre><span class="optitle"  id="INC2">INC</span><br>Increment Memory by One
+
+    M + 1 -&gt; M                       N Z C I D V
+                                     + + - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    implied       INC oper      1A    1     2
+
+    <span><a href="#INC">6502 Instruction</a></span>
+
+
+</pre><hr><pre><span class="optitle"  id="JMP2">JMP</span><br>Jump to New Location
+
+    (PC+1) -&gt; PCL                    N Z C I D V
+    (PC+2) -&gt; PCH                    - - - - - -
+
+    Addressing    Mnemonics      OPC  Bytes  Cycles
+    -----------------------------------------------
+    (absolute,X)  JMP (oper,X)    7C    3     6
+
+    <span><a href="#JMP">6502 Instruction</a></span>
+
+
+</pre><hr><pre><span class="optitle"  id="LDA2">LDA</span><br>Load Accumulator with Memory
+
+    M -&gt; A                           N Z C I D V
+                                     + + - - - -
+
+    Addressing      Mnemonics    OPC  Bytes  Cycles
+    -----------------------------------------------
+    (ind. zeropage) LDA (oper)    B2    2     5
+
+    <span><a href="#LDA">6502 Instruction</a></span>
+
+
+</pre><hr><pre><span class="optitle"  id="ORA2">ORA</span><br>OR Memory with Accumulator
+
+    A OR M -&gt; A                      N Z C I D V
+                                     + + - - - -
+
+    Addressing      Mnemonics    OPC  Bytes  Cycles
+    -----------------------------------------------
+    (ind. zeropage) ORA (oper)    12    2     5
+
+    <span><a href="#ORA">6502 Instruction</a></span>
+
+
+</pre><hr><pre><span class="optitle"  id="PHX">PHX</span><br>Push X Register
+
+    push X                           N Z C I D V
+                                     - - - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    implied       PHX           DA    1     3
+
+
+</pre><hr><pre><span class="optitle"  id="PHY">PHY</span><br>Push Y Register
+
+    push Y                           N Z C I D V
+                                     - - - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    implied       PHY           5A    1     3
+
+
+</pre><hr><pre><span class="optitle"  id="PLX">PLX</span><br>Pull X Register
+
+    pull X                           N Z C I D V
+                                     + + - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    implied       PLX           FA    1     4
+
+
+</pre><hr><pre><span class="optitle"  id="PLY">PLY</span><br>Pull Y Register
+
+    pull Y                           N Z C I D V
+                                     + + - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    implied       PLY           7A    1     4
+
+
+</pre><hr><pre><span class="optitle"  id="RMB">RMB</span><br>Reset Memory Bit
+
+This a actually a set of 8 instructions.
+Each resets a specific bit of a byte held on zero page.
+
+    M = M NAND 2^n                   N Z C I D V
+                                     - - - - - -
+
+    Addressing         Mnemonics        OPC  Bytes  Cycles
+    ------------------------------------------------------
+    zeropage           RMBn oper*        n7*   3     5
+
+    * 0 &le; n &le; 7
+
+
+</pre><hr><pre><span class="optitle"  id="SBC2">SBC</span><br>Subtract Memory from Accumulator with Borrow
+
+    A - M - C -&gt; A                   N Z C I D V
+                                     + + + - - +
+
+    Addressing       Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    (ind. zeropage)  SBC (oper)    F2    2     5
+
+    <span><a href="#SBC">6502 Instruction</a></span>
+
+
+</pre><hr><pre><span class="optitle"  id="SMB">SMB</span><br>Set Memory Bit
+
+This a actually a set of 8 instructions.
+Each sets a specific bit of a byte held on zero page.
+
+    M = M OR 2^n                     N Z C I D V
+                                     - - - - - -
+
+    Addressing         Mnemonics        OPC  Bytes  Cycles
+    ------------------------------------------------------
+    zeropage           SMBn oper*        m7*   3     5
+
+    * 0 &le; n &le; 7 , 8 &le; m &le; F
+
+
+</pre><hr><pre><span class="optitle"  id="STA2">STA</span><br>Store Accumulator in Memory
+
+    A -&gt; M                           N Z C I D V
+                                     - - - - - -
+
+    Addressing       Mnemonics    OPC  Bytes  Cycles
+    ------------------------------------------------
+    (ind. zeropage)  STA (oper)    92    2     5
+
+    <span><a href="#STA">6502 Instruction</a></span>
+
+
+</pre><hr><pre><span class="optitle"  id="STP">STP</span><br>Stop the Processor
+
+The processor halts until a hardware reset is applied.
+
+    stop                             N Z C I D V
+                                     - - - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    implied       STP           DB    1     3
+
+
+</pre><hr><pre><span class="optitle"  id="STZ">STZ</span><br>Stores a zero byte into Memory
+
+    0 -&gt; M                           N Z C I D V
+                                     - - - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    zeropage      STZ oper      64    2     3
+    zeropage,X    STZ oper,X    74    2     4
+    absolute      STZ oper      9C    3     4
+    absolute,X    STZ oper,X    9E    3     5
+
+
+</pre><hr><pre><span class="optitle"  id="TRB">TRB</span><br>Test and Reset Bits
+
+The memory byte is tested to see if it contains any of the bits indicated by the value
+in the accumulator then the bits are reset in the memory byte.
+
+    M = M NAND A, Z = M AND A        N Z C I D V
+                                     - + - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    zeropage      TRB oper      14    2     5
+    absolute      TRB oper      1C    3     6
+
+
+</pre><hr><pre><span class="optitle"  id="TSB">TSB</span><br>Test and Set Bits
+
+The memory byte is tested to see if it contains any of the bits indicated by the value
+in the accumulator then the bits are set in the memory byte.
+
+
+    M = M OR A, Z = M AND A          N Z C I D V
+                                     - + - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    zeropage      TSB oper      04    2     5
+    absolute      TSB oper      0C    3     6
+
+
+</pre><hr><pre><span class="optitle"  id="WAI">WAI</span><br>Wait for Interrupt
+
+The processor pauses at the current location until the next interrupt occurs.
+
+    wait for interrupt               N Z C I D V
+                                     - - - - - -
+
+    Addressing    Mnemonics    OPC  Bytes  Cycles
+    ---------------------------------------------
+    implied       WAI           CB    1     3
+
+
+</pre>
+<br><br><br>
+<span class="title" id="AssemblerDirectives">Assembler Directives</span>
+<br>
+
+<div>
+  <table>
+         <colgroup>
+                <col />
+                <col />
+                <col />
+         </colgroup>
+         <thead>
+                <tr>
+                   <th>Directive</th>
+                   <th>Example</th>
+                   <th>Description</th>
+                </tr>
+         </thead>
+         <tbody>
+                <tr>
+                   <td id="*">*</td>
+                   <td>*=$1000</td>
+                   <td>Sets the memory position to a given value.</td>
+                </tr>
+                <tr>
+                   <td id="ALIGN">.align</td>
+                   <td>.align $100</td>
+                   <td>Aligns the memory position with the given value. Ex.
+                                                  '.align $100' at memory position $1234 will set the position to
+                                                  $1300.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="ASSERT">.assert</td>
+                   <td>.assert "Test 1",2+2,4</td>
+                   <td>Asserts that two expressions or codeblocks are
+                                                  equal.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="ASSERTERROR">.asserterror</td>
+                   <td>.asserterror "Test 2", List().get(27)</td>
+                   <td>Asserts that a given expression or codeblock generates an
+                                                  error.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="BREAK">.break</td>
+                   <td>.break</td>
+                   <td>Puts a breakpoint on the next generated bytes.</td>
+                </tr>
+                <tr>
+                   <td id="BY">.by</td>
+                   <td>.by $01,$02,$03</td>
+                   <td>An alias for '.byte'.</td>
+                </tr>
+                <tr>
+                   <td id="BYTE">.byte</td>
+                   <td>.byte $01,$02,$03</td>
+                   <td>Outputs bytes.</td>
+                </tr>
+                <tr>
+                   <td id="CONST">.const</td>
+                   <td>.const DELAY=7</td>
+                   <td>Defines a constant.</td>
+                </tr>
+                <tr>
+                   <td id="CPU">.cpu</td>
+                   <td>.cpu _65c02</td>
+                   <td>Changes the instruction set to a different cpu.</td>
+                </tr>
+                <tr>
+                   <td id="DEFINE">.define</td>
+                   <td>.define width, height {...}</td>
+                   <td>Executes a block of directives in 'functionmode' (faster)
+                                                  to define values.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="DISK">.disk</td>
+                   <td>.disk [..disk pararamters..] {..fileparameters..}</td>
+                   <td>Creates a d64 image file.</td>
+                </tr>
+                <tr>
+                   <td id="DW">.dw</td>
+                   <td>.dw $12341234</td>
+                   <td>An alias for '.dword'.</td>
+                </tr>
+                <tr>
+                   <td id="DWORD">.dword</td>
+                   <td>.dword $12341234</td>
+                   <td>Outputs doublewords (4 byte values).</td>
+                </tr>
+                <tr>
+                   <td id="ENCODING">.encoding</td>
+                   <td>.encoding "screencode_upper"</td>
+                   <td>Sets the character encoding.</td>
+                </tr>
+                <tr>
+                   <td id="ENUM">.enum</td>
+                   <td>.enum {on, off}</td>
+                   <td>Defines a series of constants.</td>
+                </tr>
+                <tr>
+                   <td id="ERROR">.error</td>
+                   <td>.error "not good!"</td>
+                   <td>Creates an user raised error.</td>
+                </tr>
+                <tr>
+                   <td id="ERRORIF">.errorif</td>
+                   <td>.errorif x&gt;10 "not good!"</td>
+                   <td>Creates an user raised error if condition is evaluated to
+                                                  true.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="EVAL">.eval</td>
+                   <td>.eval x=x+y/2</td>
+                   <td>Evaluates a script expression.</td>
+                </tr>
+                <tr>
+                   <td id="FILE">.file</td>
+                   <td>.file [name="myfile.prg" segments="Code, Data"]</td>
+                   <td>Creates a prg or bin file from the given segments.</td>
+                </tr>
+                <tr>
+                   <td id="FILEMODIFY">.filemodify</td>
+                   <td>.filemodify Encrypt(33)</td>
+                   <td>Modify the output of the current source file with the given
+                                                  modifier.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="FILENAMESPACE">.filenamespace</td>
+                   <td>.filenamespace myspace</td>
+                   <td>Creates a namespace for all the following directives in the
+                                                  current source file.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="FILL">.fill</td>
+                   <td>.fill 10, i*2</td>
+                   <td>Fills a number of bytes with the value of a given
+                                                  expression.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="FILLWORD">.fillword</td>
+                   <td>.fillword 10, i*$102</td>
+                   <td>Fills a number of words with the value of a given
+                                                  expression.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="FOR">.for</td>
+                   <td>.for(var i;i&lt;10;i++) {...}</td>
+                   <td>Creates a for loop.</td>
+                </tr>
+                <tr>
+                   <td id="FUNCTION">.function</td>
+                   <td>.function area(h,w) {..}</td>
+                   <td>Defines a function.</td>
+                </tr>
+                <tr>
+                   <td id="IF">.if</td>
+                   <td>.if(x&gt;10) {...}</td>
+                   <td>Executes code if the given condition is true.</td>
+                </tr>
+                <tr>
+                   <td id="IMPORT BINARY">.import binary</td>
+                   <td>.import binary "Music.bin"</td>
+                   <td>Imports a binary file.</td>
+                </tr>
+                <tr>
+                   <td id="IMPORT C64">.import c64</td>
+                   <td>.import c64 "Music.c64"</td>
+                   <td>Imports a c64 files. Same as '.import binary', but ignores
+                                                  the two address bytes at the start of the file.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="IMPORT SOURCE">.import source</td>
+                   <td>.import source "MyLib.asm"</td>
+                   <td>Imports another source file. (Depricated, use #import
+                                                  instead)
+                   </td>
+                </tr>
+                <tr>
+                   <td id="IMPORT TEXT">.import text</td>
+                   <td>.import text "scroll.txt"</td>
+                   <td>Imports a text file.</td>
+                </tr>
+                <tr>
+                   <td id="IMPORTONCE">.importonce</td>
+                   <td>.importonce</td>
+                   <td>Make the assembler skip the current file if it has already
+                                                  been imported. (Depricated, use #importonce instead)
+                   </td>
+                </tr>
+                <tr>
+                   <td id="LABEL">.label</td>
+                   <td>.label color=$d020</td>
+                   <td>Assigns a given expression to a label.</td>
+                </tr>
+                <tr>
+                   <td id="LOHIFILL">.lohifill</td>
+                   <td>.lohifill $100, i*40</td>
+                   <td>Fills two table with hi and lo byte of the given
+                                                  expression. Address of the tables can be read by connecting a
+                                                  label.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="MACRO">.macro</td>
+                   <td>.macro BasicUpstart() {...}</td>
+                   <td>Defines a macro.</td>
+                </tr>
+                <tr>
+                   <td id="MEMBLOCK">.memblock</td>
+                   <td>.memblock "New block"</td>
+                   <td>Defines a new memoryblock at the current
+                                                  memoryposition.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="MODIFY">.modify</td>
+                   <td>.modify Encrypt(27) {...}</td>
+                   <td>Modifies the output of a codeblock using the given
+                                                  modifier.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="NAMESPACE">.namespace</td>
+                   <td>.namespace myspace {..}</td>
+                   <td>Creates a local namespace.</td>
+                </tr>
+                <tr>
+                   <td id="PC">.pc</td>
+                   <td>.pc=$1000</td>
+                   <td>Same as '*='</td>
+                </tr>
+                <tr>
+                   <td id="PLUGIN">.plugin</td>
+                   <td>.plugin "plugins.macros.MyMacro"</td>
+                   <td>Tells the assembler to look for a plugin at the given
+                                                  java-package path.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="PRINT">.print</td>
+                   <td>.print "Hello"</td>
+                   <td>Prints a message to the console in the last pass.</td>
+                </tr>
+                <tr>
+                   <td id="PRINTNOW">.printnow</td>
+                   <td>.printnow "Hello now"</td>
+                   <td>Prints a message to the console immediately.</td>
+                </tr>
+                <tr>
+                   <td id="PSEUDOCOMMAND">.pseudocommand</td>
+                   <td>.pseudocommand mov src:tar {...}</td>
+                   <td>Defines a pseudocommand.</td>
+                </tr>
+                <tr>
+                   <td id="PSEUDOPC">.pseudopc</td>
+                   <td>.pseudopc $2000 {...}</td>
+                   <td>Sets the program counter to something else than the actual
+                                                  memory position.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="RETURN">.return</td>
+                   <td>.return 27</td>
+                   <td>Used inside functions to return a value.</td>
+                </tr>
+                <tr>
+                   <td id="SEGMENT">.segment</td>
+                   <td>.segment Data "My Data"</td>
+                   <td>Switches to another segment.</td>
+                </tr>
+                <tr>
+                   <td id="SEGMENTDEF">.segmentdef</td>
+                   <td>.segmentdef Data [start=$1000]</td>
+                   <td>Defines a segment.</td>
+                </tr>
+                <tr>
+                   <td id="SEGMENTOUT">.segmentout</td>
+                   <td>.segmentout [segments="DRIVE_CODE"]</td>
+                   <td>Output the bytes of an intermediate segment to the current
+                                                  memoryblock.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="STRUCT">.struct</td>
+                   <td>.struct Point {x,y}</td>
+                   <td>Creates a user defined structure.</td>
+                </tr>
+                <tr>
+                   <td id="TE">.te</td>
+                   <td>.te "hello"</td>
+                   <td>An alias for '.text'.</td>
+                </tr>
+                <tr>
+                   <td id="TEXT">.text</td>
+                   <td>.text "hello"</td>
+                   <td>Dumps text bytes to memory.</td>
+                </tr>
+                <tr>
+                   <td id="VAR">.var</td>
+                   <td>.var x=27</td>
+                   <td>Defines a variable.</td>
+                </tr>
+                <tr>
+                   <td id="WHILE">.while</td>
+                   <td>.while(i&lt;10) {...}</td>
+                   <td>Creates a while loop.</td>
+                </tr>
+                <tr>
+                   <td id="WO">.wo</td>
+                   <td>.wo $1000,$1012</td>
+                   <td>An alias for '.word'.</td>
+                </tr>
+                <tr>
+                   <td id="WORD">.word</td>
+                   <td>.word $1000,$1012</td>
+                   <td>Outputs words (two bytes values),</td>
+                </tr>
+                <tr>
+                   <td id="ZP">.zp</td>
+                   <td>.zp { label: .byte 0 ... }</td>
+                   <td>Marks unresolved labels as being in the zeropage.</td>
+                </tr>
+         </tbody>
+  </table>
+</div>
+
+<br><br><br>
+<span class="title" id="PreprocessorDirectives">Preprocessor Directives</span>
+<br>
+<div>
+  <table>
+         <colgroup>
+                <col />
+                <col />
+                <col />
+         </colgroup>
+         <thead>
+                <tr>
+                   <th>Preprocessor Directives</th>
+                   <th>Example</th>
+                   <th>Description</th>
+                </tr>
+         </thead>
+         <tbody>
+                <tr>
+                   <td id="#DEFINE">#define</td>
+                   <td>#define DEBUG</td>
+                   <td>Defines a preprocessor symbol.</td>
+                </tr>
+                <tr>
+                   <td id="#ELIF">#elif</td>
+                   <td>#elif TEST</td>
+                   <td>The combination of an #else and an #if preprocessor
+                                                  directive.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="#ELSE">#else</td>
+                   <td>#else</td>
+                   <td>Used after an #if to start an else block which is executed
+                                                  if the condition is false.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="#ENDIF">#endif</td>
+                   <td>#endif</td>
+                   <td>Marks the end of an #if/#else block.</td>
+                </tr>
+                <tr>
+                   <td id="#IF">#if</td>
+                   <td>#if !DEBUG</td>
+                   <td>Discards the sourcecode after the #if-directive if the
+                                                  condition is false.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="#IMPORT">#import</td>
+                   <td>#import "file2.asm"</td>
+                   <td>Imports another sourcefile.</td>
+                </tr>
+                <tr>
+                   <td id="IMPORTIF">#importif</td>
+                   <td>#importif !DEBUG "file2.asm"</td>
+                   <td>Imports another sourcefile if the given expression is
+                                                  evaluated to true.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="#IMPORTONCE">#importonce</td>
+                   <td>#importonce</td>
+                   <td>Make the assembler skip the current file if it has already
+                                                  been imported.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="#UNDEF">#undef</td>
+                   <td>#undef DEBUG</td>
+                   <td>Removes the definition of a preprocessor symbol.</td>
+                </tr>
+         </tbody>
+  </table>
+</div>
+
+
+<br><br><br>
+<span class="title" id="ValueTypes">Value Types</span>
+<br>
+
+<div>
+  <table>
+         <colgroup>
+                <col />
+                <col />
+                <col />
+         </colgroup>
+         <thead>
+                <tr>
+                   <th>Type</th>
+                   <th>Example</th>
+                   <th>Description</th>
+                </tr>
+         </thead>
+         <tbody>
+                <tr>
+                   <td>65xxArgument</td>
+                   <td>($10),y</td>
+                   <td>A value that defines an argument given to a
+                                                  mnemnonic.
+                   </td>
+                </tr>
+                <tr>
+                   <td id="BINARYFILE">BinaryFile</td>
+                   <td>LoadBinary("file.bin", "")</td>
+                   <td>A value containing byte data.</td>
+                </tr>
+                <tr>
+                   <td id="BOOLEAN">Boolean</td>
+                   <td>true</td>
+                   <td>Either true or false.</td>
+                </tr>
+                <tr>
+                   <td id="CHAR">Char</td>
+                   <td>'x'</td>
+                   <td>A character.</td>
+                </tr>
+                <tr>
+                   <td id="HASHTABLE">Hashtable</td>
+                   <td>Hashtable()</td>
+                   <td>A value representing a hashtable.</td>
+                </tr>
+                <tr>
+                   <td id="LIST">List</td>
+                   <td>List()</td>
+                   <td>A list value.</td>
+                </tr>
+                <tr>
+                   <td id="MATRIX">Matrix</td>
+                   <td>Matrix()</td>
+                   <td>Represents a 4x4 matrix.</td>
+                </tr>
+                <tr>
+                   <td id="NULL">Null</td>
+                   <td>null</td>
+                   <td>A null value.</td>
+                </tr>
+                <tr>
+                   <td id="NUMBER">Number</td>
+                   <td>27.4</td>
+                   <td>A floating point number.</td>
+                </tr>
+                <tr>
+                   <td id="OUTPUTFILE">OutputFile</td>
+                   <td>createFile("breakpoints.txt")</td>
+                   <td>An value representing an output file.</td>
+                </tr>
+                <tr>
+                   <td id="PICTURE">Picture</td>
+                   <td>LoadPicture("blob.gif")</td>
+                   <td>The contents of a loaded picture.</td>
+                </tr>
+                <tr>
+                   <td id="SIDFILE">SidFile</td>
+                   <td>LoadSid("music.sid")</td>
+                   <td>The contents of a sid file.</td>
+                </tr>
+                <tr>
+                   <td id="STRING">String</td>
+                   <td>"Hello"</td>
+                   <td>A string value.</td>
+                </tr>
+                <tr>
+                   <td id="STRUCT">Struct</td>
+                   <td>MyStruct(1,2)</td>
+                   <td>Represents a user defined structure.</td>
+                </tr>
+                <tr>
+                   <td id="VECTOR">Vector</td>
+                   <td>Vector(1,2,3)</td>
+                   <td>A 3d vector value.</td>
+                </tr>
+         </tbody>
+  </table>
+</div>
+<br><br><br>
+<span class="title" id="StandartMacros">Standart Macros</span>
+<br>
+<pre><span class="optitle"  id="BASICUPSTART">BasicUpstart</span><br>Add BASIC line that starts your code
+
+    *= $0801 "Basic Upstart"
+    BasicUpstart(start)    // 10 sys 2064
+
+    *= $0810 "Program"
+    start:  rts
+
+</pre><hr>
+<pre><span class="optitle"  id="BASICUPSTART2">BasicUpstart2</span><br>Add BASIC line that starts your code
+
+    BasicUpstart2(start)    // 10 SYS 4096
+                            // (if label 'start' is equal to $1000)
+    ...
+    start:  rts
+
+</pre>
+<br><br><br>
+</body></html>
