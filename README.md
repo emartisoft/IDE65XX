@@ -4,5 +4,5 @@ IDE 65XX is one of the open source IDE options available for developers working 
 More info: https://sites.google.com/view/ide65xx
 
 <br>
-![Screen](https://raw.githubusercontent.com/emartisoft/IDE65XX/master/screenshots/Screen%20Shot%202020-05-19%20at%2021.20.19.png)
+![Screen](https://github.com/emartisoft/IDE65XX/blob/master/screenshots/main.png?raw=true)
 <br>Main Window<br><br>
