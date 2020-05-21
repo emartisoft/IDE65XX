@@ -3,3 +3,4 @@ IDE 65XX is one of the open source IDE options available for developers working 
 
 More info: https://sites.google.com/view/ide65xx
 
+![screenshot](screenshots/main.png)
