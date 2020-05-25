@@ -2416,7 +2416,7 @@ void MainWindow::on_bIllegal_clicked()
     ui->brHelp->setSource(QUrl("help.htm#illegal"));
 }
 
-void MainWindow::on_bStandart_clicked()
+void MainWindow::on_bStandard_clicked()
 {
     ui->brHelp->setSource(QUrl("help.htm#standart"));
 }
@@ -2441,9 +2441,9 @@ void MainWindow::on_bValueTypes_clicked()
     ui->brHelp->setSource(QUrl("help.htm#ValueTypes"));
 }
 
-void MainWindow::on_bStandartMacros_clicked()
+void MainWindow::on_bStandardMacros_clicked()
 {
-    ui->brHelp->setSource(QUrl("help.htm#StandartMacros"));
+    ui->brHelp->setSource(QUrl("help.htm#StandardMacros"));
 }
 
 void MainWindow::on_actionGenerate_File_Directive_triggered()

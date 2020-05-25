@@ -330,9 +330,9 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="bStandartMacros">
+                 <widget class="QPushButton" name="bStandardMacros">
                   <property name="text">
-                   <string> Standart Macros </string>
+                   <string> Standard Macros </string>
                   </property>
                  </widget>
                 </item>

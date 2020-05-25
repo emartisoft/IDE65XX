@@ -117,7 +117,7 @@ private slots:
     void on_brHome_anchorClicked(const QUrl &arg1);
     void on_bDescription_clicked();
     void on_bIllegal_clicked();
-    void on_bStandart_clicked();
+    void on_bStandard_clicked();
     void on_actionGenerate_File_Directive_triggered();
     void on_actionGenerate_Disk_Directive_triggered();
     void on_listOpenDocuments_itemSelectionChanged();
@@ -133,7 +133,7 @@ private slots:
     void on_actionClear_Output_triggered();
     void on_tFind_returnPressed();
     void on_tIssues_cellDoubleClicked(int row, int column);
-    void on_bStandartMacros_clicked();
+    void on_bStandardMacros_clicked();
     void on_sbMemoryViewer_valueChanged(int addressPerLine);
     void on_horizontalSlider_valueChanged(int value);
     void on_actionReport_An_Issue_triggered();
