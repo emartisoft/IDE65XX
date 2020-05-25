@@ -236,7 +236,7 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="bStandart">
+                 <widget class="QPushButton" name="bStandard">
                   <property name="text">
                    <string> 6502/6510 Opcodes </string>
                   </property>

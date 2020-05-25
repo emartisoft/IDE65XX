@@ -152,6 +152,8 @@ private slots:
 
     void on_actionSet_Assembly_File_For_Current_Tab_triggered();
 
+    void on_bStandart_clicked();
+
 private:
     Ui::MainWindow *ui;
     QFileSystemModel *m_ptrModelForTree;
