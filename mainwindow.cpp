@@ -2684,8 +2684,3 @@ void MainWindow::on_actionSet_Assembly_File_For_Current_Tab_triggered()
     filePath = tab->getCurrentFilePath();
     SetAssemblyFile();
 }
-
-void MainWindow::on_bStandart_clicked()
-{
-
-}
