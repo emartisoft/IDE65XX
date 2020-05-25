@@ -107,7 +107,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">IDE 65XX 0.1 Beta</string>
+          <string notr="true">IDE 65XX 0.1.1</string>
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -166,7 +166,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">Built on May 19, 2020
+          <string notr="true">Built on May 25, 2020
 Licensed under the GNU GPL V3.0
 
 All images designed by emarti, Murat Özdemir

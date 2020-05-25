@@ -5,7 +5,7 @@
 BasePlainTextEdit::BasePlainTextEdit(QWidget *parent): QPlainTextEdit(parent)
 {
     commentAction = new QAction(QIcon(":/res/images/comment.png"), tr("Comment"), this);
-    commentAction->setShortcut(Qt::CTRL|Qt::Key_Q);
+    commentAction->setShortcut(Qt::CTRL|Qt::Key_Slash);
     connect(commentAction, SIGNAL(triggered()), this, SLOT(commentSelectedCode()));
 
     uncommentAction = new QAction(QIcon(":/res/images/removecomment.png"), tr("Remove Comment"), this);

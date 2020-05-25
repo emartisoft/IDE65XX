@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     workspacePath = "?";
+    pAssemblyFile = asmNotSelected;
     icProvider = new IdeIconProvider();
 
     ui->dwProjectExplorer->hide();
@@ -95,6 +96,7 @@ MainWindow::MainWindow(QWidget *parent)
     menuDelete = new QAction(QIcon(":/res/images/delete.png"), tr("Delete"), this);
     menuRename = new QAction(QIcon(":/res/images/rename.png"), tr("Rename"), this);
     menuHexEditor = new QAction(QIcon(":/res/images/binary.png"), tr("Open with HexEditor"), this);
+    menuAssemblyFile = new QAction(QIcon(":/res/images/assembly.png"), tr("Set Assembly File"), this);
 
     connect(menuEmulator, SIGNAL(triggered()), this, SLOT(RunInEmulator()));
     connect(menuExomizer, SIGNAL(triggered()), this, SLOT(Compress()));
@@ -104,6 +106,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(menuDelete, SIGNAL(triggered()), this, SLOT(RemoveFileOrFolder()));
     connect(menuRename, SIGNAL(triggered()), this, SLOT(Rename()));
     connect(menuHexEditor, SIGNAL(triggered()), this, SLOT(OpenWithHexEditor()));
+    connect(menuAssemblyFile, SIGNAL(triggered()), this, SLOT(SetAssemblyFile()));
+
 
     fileContextMenu->addAction(menuEmulator);
     fileContextMenu->addAction(menuExomizer);
@@ -115,6 +119,8 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
     fileContextMenu->addAction(menuSidPlayer);
     fileContextMenu->addAction(menuHexEditor);
+    fileContextMenu->addSeparator();
+    fileContextMenu->addAction(menuAssemblyFile);
     fileContextMenu->addSeparator();
     fileContextMenu->addAction(menuDelete);
     fileContextMenu->addAction(menuRename);
@@ -448,7 +454,7 @@ void MainWindow::SetCursorPos()
     if(ui->tabWidget->count()<1) return;
     Tab *tab = static_cast<Tab*>( ui->tabWidget->widget(ui->tabWidget->currentIndex()));
     QString curString = tab->code->textCursor().block().text();
-    statusCurPosInfo->setText(QString("  Line %1  |  Column %2  |  Sel %4  |  Length %3  ").arg(tab->code->textCursor().blockNumber()+1).arg(tab->code->textCursor().positionInBlock()+1).arg(tab->code->toPlainText().length()).arg(tab->code->textCursor().selectedText().length()));
+    statusCurPosInfo->setText(QString("  Line %1  |  Column %2  |  Sel %4  |  Length %3  |  %5  ").arg(tab->code->textCursor().blockNumber()+1).arg(tab->code->textCursor().positionInBlock()+1).arg(tab->code->toPlainText().length()).arg(tab->code->textCursor().selectedText().length()).arg(tab->code->overwriteMode()?"OVR":"INS"));
 }
 
 /*! show find dialog
@@ -623,14 +629,15 @@ void MainWindow::openFileFromPath(QString filenamePath)
         connect(tab->code, SIGNAL(bookmarksChanged(quint64, QString, bool)), this, SLOT(bookmarksChangedSlot(quint64, QString, bool)));
         connect(tab->code, SIGNAL(updateLineNumber(quint64, int)), this, SLOT(updateLineNumberSlot(quint64, int)));
         connect(tab->code, SIGNAL(showFindDialog()), this, SLOT(showFind()));
+        connect(tab->code, SIGNAL(overWriteModeChanged()), this, SLOT(SetCursorPos()));
+
         tab->code->document()->setModified(false);
         tab->code->setCompleter(completer);
         tab->code->setFocus();
         tab->code->setFont(QFont(pCodeFontName, pCodeFontSize));
         tab->code->setWordWrapMode((pWordWrap)? QTextOption::WordWrap : QTextOption::NoWrap);
         QFontMetrics fm(tab->code->font());
-        tab->code->setCursorWidth(fm.horizontalAdvance('9')); // cursor width
-        tab->code->setTabStopDistance(fm.horizontalAdvance(' ')*5); // tab distance
+        tab->code->setTabStopDistance(fm.horizontalAdvance(' ')*pTabSize); // tab distance
         ui->tabWidget->setTabIcon(ui->tabWidget->currentIndex(), icProvider->icon(fi));
         ui->menuEdit->setEnabled(true);
         ui->statusbar->showMessage("File Opened", TIMEOUT);
@@ -907,6 +914,8 @@ void MainWindow::on_actionSelect_Workspace_triggered()
     {  
         closeAll();
         bookmarks->removeAll();
+        pAssemblyFile = asmNotSelected;
+        ui->lAssemblyFile->setText(asmNotSelected);
         openWorkspace(directory);
         AddRecentWorkspace(directory);
     }
@@ -961,7 +970,6 @@ void MainWindow::setActionsEnable(bool value)
 {
     ui->actionNew->setEnabled(value);
     ui->actionOpen->setEnabled(value);
-
     setActionsEnableForDoc(value);
 }
 
@@ -973,10 +981,10 @@ void MainWindow::setActionsEnableForDoc(bool value)
     ui->actionClose->setEnabled(value);
     ui->actionClose_All->setEnabled(value);
     ui->actionCloseAllButThis->setEnabled(value);
-    ui->actionBuild_this->setEnabled(value);
-    ui->actionBuild_and_Run->setEnabled(value);
-    ui->actionBuild_as_binary->setEnabled(value);
-    ui->actionDebugger->setEnabled(value);
+//    ui->actionBuild_this->setEnabled(value);
+//    ui->actionBuild_and_Run->setEnabled(value);
+//    ui->actionBuild_as_binary->setEnabled(value);
+//    ui->actionDebugger->setEnabled(value);
     ui->actionGenerate_Disk_Directive->setEnabled(value);
     ui->actionGenerate_File_Directive->setEnabled(value);
     ui->actionInsert_BASIC_SYS_Line->setEnabled(value);
@@ -1009,6 +1017,8 @@ void MainWindow::on_brHome_anchorClicked(const QUrl &arg1)
     {
         closeAll();
         bookmarks->removeAll();
+        pAssemblyFile = asmNotSelected;
+        ui->lAssemblyFile->setText(asmNotSelected);
         openWorkspace(word);
         AddRecentWorkspace(word);
     }
@@ -1070,8 +1080,8 @@ void MainWindow::printOutputWithTime(const QString &message, const QColor &color
 
 bool MainWindow::build(bool afterbuildthenrun, bool binary)
 {
-    if(ui->tabWidget->count()==0) return false;
-
+   // if(ui->tabWidget->count()==0) return false;
+    OpenCode();
     ui->dwOutput->show();
     ui->dwIssues->show();
 
@@ -1085,16 +1095,24 @@ bool MainWindow::build(bool afterbuildthenrun, bool binary)
     //save all
     emit on_actionSaveAll_triggered();
 
-    int crIndex = ui->tabWidget->currentIndex();
-    Tab *tab = /*(Tab *)*/ static_cast<Tab*>( ui->tabWidget->widget(crIndex));
-    QString filePath = tab->getCurrentFilePath();
+    if(pAssemblyFile.right(4).toLower() != ".asm")
+    {
+        printOutputWithTime("Assembly file not selected\n", QColor(0xf3, 0x34, 0x34));
+        return false;
+    }
+
+//    int crIndex = ui->tabWidget->currentIndex();
+//    Tab *tab = /*(Tab *)*/ static_cast<Tab*>( ui->tabWidget->widget(crIndex));
+//    QString filePath = tab->getCurrentFilePath();
+
+    filePath = QDir::cleanPath(workspacePath + QDir::separator() + pAssemblyFile);
     QFileInfo fi(filePath);
     QString ext = fi.completeSuffix();
-    filePath = fi.filePath();
+   // filePath = fi.filePath();
 
     if(!((ext=="asm")||(ext=="s")))
     {
-        printOutputWithTime("Unable to build this file [" + ui->tabWidget->tabText(crIndex) + "]\n", QColor(0xf3, 0x34, 0x34));
+        printOutputWithTime("Unable to build this file [" + pAssemblyFile + "]\n", QColor(0xf3, 0x34, 0x34));
         return false;
     }
 
@@ -1105,7 +1123,7 @@ bool MainWindow::build(bool afterbuildthenrun, bool binary)
         ui->statusbar->showMessage("Build error", TIMEOUT);
         printOutputWithTime("File not found: " + filePath + "\n", QColor(0xf3, 0x34, 0x34));
     } else {
-        printOutputWithTime("Building for " + ui->tabWidget->tabText(crIndex) + "\n", Qt::darkGray);
+        printOutputWithTime("Building for " + pAssemblyFile + "\n", Qt::darkGray);
 
         QCoreApplication::processEvents();
         QProcess asmProcess;
@@ -1532,11 +1550,11 @@ void MainWindow::ExecuteAppWithFile(QString pApplication, QString additionalArgs
 
             if(parameters[i].contains("<dbgname>"))
             {
-                int crIndex = ui->tabWidget->currentIndex();
-                Tab *tab = /*(Tab *)*/ static_cast<Tab*>( ui->tabWidget->widget(crIndex));
-                QString filePath = tab->getCurrentFilePath();
+//                int crIndex = ui->tabWidget->currentIndex();
+//                Tab *tab = /*(Tab *)*/ static_cast<Tab*>( ui->tabWidget->widget(crIndex));
+//                QString filePath = tab->getCurrentFilePath();
                 QSettings cmdline(Common::appConfigDir()+"/cmdline.ini", QSettings::IniFormat);
-                QFileInfo fid(filePath);
+                QFileInfo fid(QDir::cleanPath(workspacePath + QDir::separator() + pAssemblyFile));
                 QString fOutDir = "";
                 if(cmdline.value("odir", false).toBool())
                     fOutDir = cmdline.value("odirtext", "build").toString()+"/";
@@ -1752,6 +1770,14 @@ void MainWindow::OpenWithHexEditor()
     loadHexFile();
     ui->dwHexEditor->show();
     ui->statusbar->showMessage("Hex file loaded", TIMEOUT);
+}
+
+void MainWindow::SetAssemblyFile()
+{
+    pAssemblyFile = filePath.remove(workspacePath);
+    ui->lAssemblyFile->setText(pAssemblyFile);
+    settings.setValue("AssemblyFile", pAssemblyFile);
+    settings.sync();
 }
 
 void MainWindow::OpenCode()
@@ -1991,8 +2017,8 @@ void MainWindow::on_actionDebugger_triggered()
     QFileInfo debuggerApp(pDebugger);
     QString dName = debuggerApp.baseName();
     QString dArgs = "";
-    if(dName=="C64Debugger") dArgs = "-autojmp -layout 10 -symbols <dbgname>.vs -wait 2500 -prg <dbgname>.prg";
-    if(dName.left(3)=="x64") dArgs = "-moncommands <dbgname>.vs <dbgname>.prg";
+    if(dName.left(3)=="C64") dArgs = "-autojmp -layout 10 -symbols <dbgname>.vs -wait 2500 -prg <dbgname>.prg"; // c64 debugger
+    if(dName.left(3)=="x64") dArgs = "-moncommands <dbgname>.vs <dbgname>.prg"; // vice
 
     if((debuggerApp.isFile())&&(!dArgs.isEmpty()))
     {
@@ -2048,7 +2074,7 @@ void MainWindow::on_actionSettings_triggered()
             tab->code->setWordWrapMode((pWordWrap)? QTextOption::WordWrap : QTextOption::NoWrap);
             tab->code->setFont(QFont(pCodeFontName, pCodeFontSize));
             QFontMetrics fm(tab->code->font());
-            tab->code->setCursorWidth(fm.horizontalAdvance('9'));
+            tab->code->setTabStopDistance(fm.horizontalAdvance(' ')*pTabSize);
         }
 
         // restart required?
@@ -2057,7 +2083,7 @@ void MainWindow::on_actionSettings_triggered()
             if(QMessageBox::question(this,"Restart?", "Restart the IDE 65XX application for this change to take effect?")==QMessageBox::Yes)
             {
                 qApp->quit();
-                QProcess::startDetached(qApp->arguments()[0], QStringList() << "restart");// qApp->arguments()); //application restart
+                QProcess::startDetached(qApp->arguments()[0], QStringList() << "restart");//application restart
             }
             settingsWin->restartRequired = false;
         }
@@ -2067,16 +2093,12 @@ void MainWindow::on_actionSettings_triggered()
 
 void MainWindow::writeSettings()
 {
-    //---- Maximized or Size, Pos ----
-//    bool maximized = this->isMaximized();
-//    settings.setValue("AppMaximized", maximized);
-//    if (!maximized) {
-        settings.setValue("AppSize", this->size());
-        settings.setValue("AppPos", this->pos());
-    //}
-    //---- Dockstate ----
+    // Size, Pos
+    settings.setValue("AppSize", this->size());
+    settings.setValue("AppPos", this->pos());
+    // Dockstate
     settings.setValue("DockState", this->saveState());
-    //---- Open Files ----
+    // Open Files
     QStringList files;
     for (int i = 0; i < ui->tabWidget->count(); i++)
     {
@@ -2084,10 +2106,11 @@ void MainWindow::writeSettings()
         files << tab->getCurrentFilePath();
     }
     settings.setValue("OpenFiles", QVariant::fromValue(files));
-    //---- workspace ----
+    // workspace
     settings.setValue("Workspace", workspacePath);
+    settings.setValue("AssemblyFile", pAssemblyFile);
 
-    //---- kits ----
+    // kits
     pJRE = settingsWin->getJRE();
     settings.setValue("JRE", pJRE);
 
@@ -2139,6 +2162,9 @@ void MainWindow::writeSettings()
     pMaxRecentWorkspace = settingsWin->getMaxRecentWorkspace();
     settings.setValue("MaxRecentWorkspace", pMaxRecentWorkspace);
 
+    pTabSize = settingsWin->getTabSize();
+    settings.setValue("TabSize", pTabSize);
+
     pCodeFontName = settingsWin->getCodeFontName();
     settings.setValue("CodeFontName", pCodeFontName);
 
@@ -2169,30 +2195,24 @@ void MainWindow::writeSettings()
 
 void MainWindow::readSettings()
 {
-    //---- Maximized or Size ----
-//    if (settings.value("AppMaximized").toBool())
-//    {
-//        showMaximized();
-//    }
-//    else
-//    {
-        resize(settings.value("AppSize", QSize(WINDOW_WIDTH, WINDOW_HEIGHT)).toSize());
-        move(settings.value("AppPos", QPoint(100,100)).toPoint());
-   // }
-    //---- Dockstate ----
+    // pos, Size
+    resize(settings.value("AppSize", QSize(WINDOW_WIDTH, WINDOW_HEIGHT)).toSize());
+    move(settings.value("AppPos", QPoint(100,100)).toPoint());
+    // Dockstate
     const QVariant state = settings.value("DockState");
     if (state.isValid())
     {
         restoreState(state.toByteArray());
     }
-    //---- workspace ----
+    // workspace
     QString strWorkspace = settings.value("Workspace").toString();
+
     pOpenLastUsedFiles = settings.value("OpenLastUsedFiles", true).toBool();
     settingsWin->setOpenLastUsedFiles(pOpenLastUsedFiles);
     const QStringList files = settings.value("OpenFiles").toStringList();
     bWelcome = files.count() < 1;
 
-    //---- Open Files ----
+    // Open Files
     if(strWorkspace != "?")
     {
         if(pOpenLastUsedFiles)
@@ -2210,7 +2230,6 @@ void MainWindow::readSettings()
 
             setActionsEnable(true);
         }
-
     }
     else
     {
@@ -2271,9 +2290,13 @@ void MainWindow::readSettingsOptionsOnly()
                                "x64"
                            #endif
                                ).toString();
+    pAssemblyFile = settings.value("AssemblyFile").toString();
+    ui->lAssemblyFile->setText(pAssemblyFile);
     settingsWin->setDebugger(pDebugger);
     pMaxRecentWorkspace = settings.value("MaxRecentWorkspace", 10).toInt();
     settingsWin->setMaxRecentWorkspace(pMaxRecentWorkspace);
+    pTabSize = settings.value("TabSize", 10).toInt();
+    settingsWin->setTabSize(pTabSize);
     pCodeFontName = settings.value("CodeFontName", "Ubuntu Mono").toString();
     settingsWin->setCodeFontName(pCodeFontName);
     pCodeFontSize = settings.value("CodeFontSize", 12).toInt();
@@ -2336,6 +2359,8 @@ void MainWindow::on_tvWorkspaceFiles_customContextMenuRequested(const QPoint &po
         menuDirmaster->setVisible(false);
         menuSidPlayer->setVisible(false);
         menuHexEditor->setVisible(false);
+        menuAssemblyFile->setVisible(false);
+
         QFileInfo fi(filePath);
         QString ext = fi.completeSuffix();
 
@@ -2369,6 +2394,12 @@ void MainWindow::on_tvWorkspaceFiles_customContextMenuRequested(const QPoint &po
             menuEmulator->setVisible(true);
             menuDirmaster->setVisible(true);
         }
+
+        if(ext=="asm")
+        {
+            menuAssemblyFile->setVisible(true);
+        }
+
 
         fileContextMenu->exec(ui->tvWorkspaceFiles->viewport()->mapToGlobal(pos));
 
@@ -2643,4 +2674,13 @@ void MainWindow::loadHexFile()
     hexFilename->setText(fi.canonicalFilePath().remove(workspacePath));
     hexwatcher->addPath(curHexFilename);
 
+}
+
+void MainWindow::on_actionSet_Assembly_File_For_Current_Tab_triggered()
+{
+    if(ui->tabWidget->count()==0) return;
+    int crIndex = ui->tabWidget->currentIndex();
+    Tab *tab = /*(Tab *)*/ static_cast<Tab*>( ui->tabWidget->widget(crIndex));
+    filePath = tab->getCurrentFilePath();
+    SetAssemblyFile();
 }

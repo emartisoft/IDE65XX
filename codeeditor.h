@@ -61,6 +61,7 @@ signals:
     void bookmarksChanged(quint64 lineNumber, QString text, bool isAdded);
     void updateLineNumber(quint64 currentLine, int delta);
     void showFindDialog();
+    void overWriteModeChanged();
 };
 
 class LineNumberArea : public QWidget

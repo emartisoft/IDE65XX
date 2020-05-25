@@ -73,5 +73,6 @@
         <file>style/commodore_button.png</file>
         <file>images/saveselection.png</file>
         <file>style/fabric.png</file>
+        <file>images/assembly.png</file>
     </qresource>
 </RCC>

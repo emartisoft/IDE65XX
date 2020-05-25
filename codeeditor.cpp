@@ -24,6 +24,8 @@ CodeEditor::CodeEditor(QWidget *parent) : BasePlainTextEdit(parent),
     updateLineNumberAreaWidth(0);
     highlightCurrentLine();
 
+    setCursorWidth(2);
+
     connect(toogleBookmark, SIGNAL(triggered()), this, SLOT(setBookmarkOnCurrentLine()));
     setMouseTracking(true);
 }
@@ -122,6 +124,21 @@ void CodeEditor::keyReleaseEvent(QKeyEvent *event)
             int d = getZoom();
             (d>0)?zoomIn(-d):zoomOut(d);
             resetZoom();
+    }
+    // insert or overwrite
+    if(event->key() == Qt::Key_Insert)
+    {
+        setOverwriteMode(!overwriteMode());
+        if(overwriteMode())
+        {
+            setCursorWidth(QFontMetrics(font()).horizontalAdvance('9') - 1); // cursor width
+
+        }
+        else
+        {
+            setCursorWidth(2);
+        }
+        emit overWriteModeChanged();
     }
 }
 

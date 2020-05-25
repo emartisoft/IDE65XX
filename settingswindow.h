@@ -32,6 +32,7 @@ public:
     void setDebugger(QString &value);
     void setOpenLastUsedFiles(bool open);
     void setMaxRecentWorkspace(int count);
+    void setTabSize(int size);
     void setCodeFontName(QString &fontName);
     void setCodeFontSize(int fontSize);
     void setApplicationFont(QString fontName, int fontSize);
@@ -58,6 +59,7 @@ public:
     QString getBuildDir();
     bool getOpenLastUsedFiles();
     int getMaxRecentWorkspace();
+    int getTabSize();
     QString getCodeFontName();
     int getCodeFontSize();
     bool getWordWrap();

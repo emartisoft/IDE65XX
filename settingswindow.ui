@@ -41,15 +41,15 @@
       <number>0</number>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="pGeneral">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-203</y>
+        <y>-26</y>
         <width>761</width>
-        <height>551</height>
+        <height>579</height>
        </rect>
       </property>
       <attribute name="label">
@@ -211,6 +211,49 @@
           <string>Enable text wrapping</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_57">
+         <item>
+          <widget class="QLabel" name="label_47">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Tab Size:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spTabStopDistance">
+           <property name="minimum">
+            <number>4</number>
+           </property>
+           <property name="maximum">
+            <number>9999</number>
+           </property>
+           <property name="value">
+            <number>10</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_17">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
        <item>
         <spacer name="verticalSpacer_5">
@@ -474,7 +517,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Java Runtime Environment &lt;b&gt; java(.exe)&lt;/b&gt; File Path</string>
+            <string>Java Runtime Environment &lt;b&gt; java(.exe)&lt;/b&gt; File Path [Java Version 8.0+]</string>
            </property>
           </widget>
          </item>
@@ -947,7 +990,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Debugger</string>
+            <string>Debugger (VICE or C64 Debugger)</string>
            </property>
           </widget>
          </item>

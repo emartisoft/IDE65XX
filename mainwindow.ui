@@ -689,6 +689,7 @@ QTabBar::close-button:pressed {
     <addaction name="separator"/>
     <addaction name="actionBuild_as_binary"/>
     <addaction name="separator"/>
+    <addaction name="actionSet_Assembly_File_For_Current_Tab"/>
     <addaction name="actionClear_Output"/>
    </widget>
    <widget class="QMenu" name="menuDebug">
@@ -770,8 +771,8 @@ QTabBar::close-button:pressed {
   <widget class="QDockWidget" name="dwProjectExplorer">
    <property name="minimumSize">
     <size>
-     <width>200</width>
-     <height>113</height>
+     <width>218</width>
+     <height>168</height>
     </size>
    </property>
    <property name="allowedAreas">
@@ -786,22 +787,19 @@ QTabBar::close-button:pressed {
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <property name="spacing">
-      <number>0</number>
-     </property>
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum>
+      <number>2</number>
      </property>
      <property name="leftMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="topMargin">
       <number>0</number>
      </property>
      <property name="rightMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="bottomMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <item>
       <widget class="QTreeView" name="tvWorkspaceFiles">
@@ -825,13 +823,66 @@ QTabBar::close-button:pressed {
        </property>
       </widget>
      </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_9">
+       <item>
+        <widget class="QLabel" name="label_7">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Assembly File </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Line" name="line_6">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QLabel" name="lAssemblyFile">
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="text">
+        <string notr="true">[ Assembly file not selected ]</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+       <property name="indent">
+        <number>2</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line_7">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
   <widget class="QDockWidget" name="dwOutput">
    <property name="minimumSize">
     <size>
-     <width>80</width>
+     <width>81</width>
      <height>120</height>
     </size>
    </property>
@@ -856,16 +907,16 @@ QTabBar::close-button:pressed {
       <number>0</number>
      </property>
      <property name="leftMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="topMargin">
       <number>0</number>
      </property>
      <property name="rightMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="bottomMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <item>
       <widget class="QTextEdit" name="tOutput">
@@ -886,7 +937,7 @@ QTabBar::close-button:pressed {
   <widget class="QDockWidget" name="dwOpenDocument">
    <property name="minimumSize">
     <size>
-     <width>200</width>
+     <width>208</width>
      <height>113</height>
     </size>
    </property>
@@ -905,16 +956,16 @@ QTabBar::close-button:pressed {
       <number>0</number>
      </property>
      <property name="leftMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="topMargin">
       <number>0</number>
      </property>
      <property name="rightMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="bottomMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <item>
       <widget class="QListWidget" name="listOpenDocuments">
@@ -975,16 +1026,16 @@ QTabBar::close-button:pressed {
       <number>0</number>
      </property>
      <property name="leftMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="topMargin">
       <number>0</number>
      </property>
      <property name="rightMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="bottomMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <item>
       <widget class="QTableWidget" name="tIssues">
@@ -1078,7 +1129,7 @@ QTabBar::close-button:pressed {
    <property name="minimumSize">
     <size>
      <width>250</width>
-     <height>347</height>
+     <height>361</height>
     </size>
    </property>
    <property name="allowedAreas">
@@ -1093,7 +1144,7 @@ QTabBar::close-button:pressed {
    <widget class="QWidget" name="dockWidgetContents_5">
     <layout class="QVBoxLayout" name="verticalLayout_17">
      <property name="spacing">
-      <number>2</number>
+      <number>4</number>
      </property>
      <property name="leftMargin">
       <number>2</number>
@@ -1105,7 +1156,7 @@ QTabBar::close-button:pressed {
       <number>2</number>
      </property>
      <property name="bottomMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <item>
       <widget class="QLabel" name="mvWarning">
@@ -1458,16 +1509,16 @@ background-color: rgb(255, 0, 0);</string>
       <number>2</number>
      </property>
      <property name="leftMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="topMargin">
       <number>0</number>
      </property>
      <property name="rightMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="bottomMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <item>
       <widget class="Line" name="line_5">
@@ -1540,6 +1591,9 @@ background-color: rgb(255, 0, 0);</string>
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+X</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -1745,6 +1799,18 @@ background-color: rgb(255, 0, 0);</string>
   <action name="actionReport_An_Issue">
    <property name="text">
     <string>Report An Issue On GitHub</string>
+   </property>
+  </action>
+  <action name="actionSet_Assembly_File_For_Current_Tab">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/res/images/assembly.png</normaloff>:/res/images/assembly.png</iconset>
+   </property>
+   <property name="text">
+    <string>Set Assembly File For Current Tab</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
    </property>
   </action>
  </widget>

@@ -68,6 +68,7 @@ public slots:
     void RemoveFileOrFolder();
     void Rename();
     void OpenWithHexEditor();
+    void SetAssemblyFile();
 
     void OpenCode();
     void OpenHome();
@@ -149,6 +150,8 @@ private slots:
     void hexFileOpen();
     void hexFileSaveselection();
 
+    void on_actionSet_Assembly_File_For_Current_Tab_triggered();
+
 private:
     Ui::MainWindow *ui;
     QFileSystemModel *m_ptrModelForTree;
@@ -201,8 +204,12 @@ private:
     QString pDirMaster;
     QString pC1541;
     QString pDebugger;
+    QString pAssemblyFile;
+    QString asmNotSelected = "[ Assembly file not selected ]";
+
     bool pOpenLastUsedFiles;
     int pMaxRecentWorkspace;
+    int pTabSize;
     QString pCodeFontName;
     int pCodeFontSize;
     bool pWordWrap;
@@ -241,6 +248,7 @@ private:
     QAction *menuRename;
     QAction *menuSidPlayer;
     QAction *menuHexEditor;
+    QAction *menuAssemblyFile;
 
     QAbstractItemModel *modelFromFile(const QString& fileName);
     QCompleter *completer = nullptr;

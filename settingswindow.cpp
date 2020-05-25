@@ -100,6 +100,11 @@ void SettingsWindow::setMaxRecentWorkspace(int count)
     ui->spMaxRecentWorkspace->setValue(count);
 }
 
+void SettingsWindow::setTabSize(int size)
+{
+    ui->spTabStopDistance->setValue(size);
+}
+
 void SettingsWindow::setCodeFontName(QString &fontName)
 {
     ui->lOutput->setFont(QFont(fontName));
@@ -223,6 +228,11 @@ bool SettingsWindow::getOpenLastUsedFiles()
 int SettingsWindow::getMaxRecentWorkspace()
 {
     return ui->spMaxRecentWorkspace->value();
+}
+
+int SettingsWindow::getTabSize()
+{
+    return ui->spTabStopDistance->value();
 }
 
 QString SettingsWindow::getCodeFontName()
