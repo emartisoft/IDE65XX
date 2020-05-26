@@ -1081,6 +1081,7 @@ void MainWindow::printOutputWithTime(const QString &message, const QColor &color
 bool MainWindow::build(bool afterbuildthenrun, bool binary)
 {
    // if(ui->tabWidget->count()==0) return false;
+    writeSettings();
     OpenCode();
     ui->dwOutput->show();
     ui->dwIssues->show();
