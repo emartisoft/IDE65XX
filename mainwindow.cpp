@@ -796,6 +796,7 @@ void MainWindow::setTopToolbar(int index)
     {
         Tab *tab = static_cast<Tab*>( ui->tabWidget->widget(index));
         ui->topToolBar->addSeparator();
+        ui->topToolBar->addAction(findAction);
         ui->topToolBar->addActions(tab->code->getContextMenu()->actions());
     }
 }
