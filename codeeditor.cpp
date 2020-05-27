@@ -177,6 +177,8 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
                 cur.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
                 QString str = cur.selectedText();   // get text from line
 
+                emit AfterEnterSendLine(str); // signal
+
                 int spcCount = 0;
                 int tabCount = 0;
                 int lstr = str.length();

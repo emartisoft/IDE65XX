@@ -32,6 +32,7 @@
 #include "choosetopic.h"
 #include "qhexedit2/qhexedit.h"
 #include "hexsearchdialog.h"
+#include "cartconv.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -69,6 +70,7 @@ public slots:
     void Rename();
     void OpenWithHexEditor();
     void SetAssemblyFile();
+    void ConvertToCrt();
 
     void OpenCode();
     void OpenHome();
@@ -83,6 +85,8 @@ public slots:
 
     void memoryViewerCurrentAddressChanged(int);
     void memoryViewerCurrentCoordinateChanged(int x, int y);
+
+    void ReceiveLineForCompleter(QString line);
 
 private slots:
     void on_tvWorkspaceFiles_doubleClicked(const QModelIndex &index);
@@ -152,6 +156,8 @@ private slots:
 
     void on_actionSet_Assembly_File_For_Current_Tab_triggered();
 
+    void on_actionCartridge_Conversion_Utility_triggered();
+
 private:
     Ui::MainWindow *ui;
     QFileSystemModel *m_ptrModelForTree;
@@ -170,6 +176,8 @@ private:
     void readSettings();
     void readSettingsOptionsOnly();
     SettingsWindow *settingsWin;
+
+    CartConv *cc;
 
     QFileSystemWatcher *watcher;
     QFileSystemWatcher *hexwatcher;
@@ -201,6 +209,7 @@ private:
     QString pCompressionParameters;
     QString pSIDPlayer;
     QString pSIDPlayerParameters;
+    QString pCartconv;
     QString pDirMaster;
     QString pC1541;
     QString pDebugger;
@@ -249,6 +258,7 @@ private:
     QAction *menuSidPlayer;
     QAction *menuHexEditor;
     QAction *menuAssemblyFile;
+    QAction *menuCartConv;
 
     QAbstractItemModel *modelFromFile(const QString& fileName);
     QCompleter *completer = nullptr;
@@ -283,6 +293,8 @@ private:
     bool sbMemoryViewerValueNotChanged = true;
 
     void prepareBeforeOpen(QString filename);
+
+    void saveUserCompleter();
 
 protected:
     void closeEvent(QCloseEvent *event) override;

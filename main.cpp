@@ -4,7 +4,6 @@
 #include "darkfusionstyle.h"
 #include "commodorestyle.h"
 #include "fabricstyle.h"
-#include <QFile>
 #include <QTextStream>
 
 int main(int argc, char *argv[])

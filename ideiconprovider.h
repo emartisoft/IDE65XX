@@ -26,6 +26,7 @@ private:
     QIcon m_d71;
     QIcon m_d81;
     QIcon m_vs;
+    QIcon m_crt;
     QIcon m_undefined;
 };
 

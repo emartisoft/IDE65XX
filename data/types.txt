@@ -1,0 +1,61 @@
+normal - Generic 8kb/12kb/16kb .crt file (Default bin->crt)
+ulti - Ultimax mode 4kb/8kb/16kb .crt file
+ap - Atomic Power .crt file
+ar2 - Action Replay MK2 .crt file
+ar3 - Action Replay MK3 .crt file
+ar4 - Action Replay MK4 .crt file
+ar5 - Action Replay V5 .crt file
+cap - Capture .crt file
+comal - Comal 80 .crt file
+dep256 - Dela EP256 .crt file - extra files can be inserted
+dep64 - Dela EP64 .crt file - extra files can be inserted
+dep7x8 - Dela EP7x8 .crt file - extra files can be inserted
+din - Dinamic .crt file
+dsm - Diashow-Maker .crt file
+easy - EasyFlash .crt file
+ecr - Easy Calc Result .crt file
+epyx - Epyx FastLoad .crt file
+exos - EXOS .crt file
+expert - Expert Cartridge .crt file
+f64 - Formel 64 .crt file
+fc1 - The Final Cartridge .crt file
+fc3 - The Final Cartridge III .crt file
+fcp - Final Cartridge Plus .crt file
+ff - Freeze Frame .crt file
+fm - Freeze Machine .crt file
+fp - Fun Play .crt file
+gk - Game Killer .crt file
+gmod2 - GMod2 .crt file
+gs - C64 Games System .crt file
+ide64 - IDE64 .crt file
+ieee - IEEE-488 Interface .crt file
+kcs - KCS Power Cartridge .crt file
+ks - Kingsoft .crt file
+mach5 - MACH 5 .crt file
+md - Magic Desk .crt file
+mf - Magic Formel .crt file
+mikro - Mikro Assembler .crt file
+mmc64 - MMC64 .crt file
+mmcr - MMC Replay .crt file
+mv - Magic Voice .crt file
+ocean - Ocean .crt file
+p64 - Prophet64 .crt file
+pf - Pagefox .crt file
+rep256 - REX 256k EPROM Cart .crt file - extra files can be inserted
+rgcd - RGCD .crt file
+ross - ROSS .crt file
+rr - Retro Replay .crt file
+rrnet - RR-Net MK3 .crt file
+ru - REX Utility .crt file
+s64 - Snapshot 64 .crt file
+sb - Structured BASIC .crt file
+se5 - Super Explode V5.0 .crt file
+sg - Super Games .crt file
+silver - Silverrock 128K Cartridge .crt file
+simon - Simons' BASIC .crt file
+ss4 - Super Snapshot V4 .crt file
+ss5 - Super Snapshot V5 .crt file
+star - Stardos .crt file
+wl - Westermann Learning .crt file
+ws - Warp Speed .crt file
+zaxxon - Zaxxon .crt file

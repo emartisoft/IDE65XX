@@ -140,6 +140,11 @@ void SettingsWindow::setSIDPlayerParameters(QString &value)
     ui->tSIDPlayerParameters->setText(value);
 }
 
+void SettingsWindow::setCartconv(QString &value)
+{
+    ui->tCartconv->setText(value);
+}
+
 void SettingsWindow::setCmdLinesEnabledForDebug(bool debugdump, bool vicesymbols)
 {
     ui->coDebugdump->setChecked(debugdump);
@@ -210,6 +215,11 @@ QString SettingsWindow::getSIDPlayer()
 QString SettingsWindow::getSIDPlayerParameters()
 {
     return ui->tSIDPlayerParameters->text();
+}
+
+QString SettingsWindow::getCartconv()
+{
+    return ui->tCartconv->text();
 }
 
 QString SettingsWindow::getBuildDir()
@@ -828,4 +838,22 @@ void SettingsWindow::setMicro64()
 void SettingsWindow::setZ64K()
 {
     ui->tEmulatorParameters->setText("c64 <file>");
+}
+
+void SettingsWindow::on_bCartconv_clicked()
+{
+    QString strFileName = QFileDialog::getOpenFileName(this, tr("Select Cartridge Conversion Utility (cartconv VICE)"),
+                                                       Common::appLocalDir(),
+
+                                                   #ifdef Q_OS_WIN
+                                                       tr("Cartridge Conversion Utility (cartconv VICE) (cartconv.exe)"
+                                                   #else
+                                                       tr("Cartridge Conversion Utility (cartconv VICE) (*)"
+                                                   #endif
+                                                       ));
+    if (strFileName.isEmpty()) return;
+#ifdef Q_OS_MACOS
+    changePathForMacOSAppFile(strFileName);
+#endif
+    ui->tCartconv->setText(strFileName);
 }

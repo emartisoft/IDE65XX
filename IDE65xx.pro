@@ -9,6 +9,7 @@ SOURCES += \
     about.cpp \
     baseplaintextedit.cpp \
     bookmarkwidget.cpp \
+    cartconv.cpp \
     choosetopic.cpp \
     codeeditor.cpp \
     commodorestyle.cpp \
@@ -37,6 +38,7 @@ HEADERS += \
     about.h \
     baseplaintextedit.h \
     bookmarkwidget.h \
+    cartconv.h \
     choosetopic.h \
     codeeditor.h \
     commodorestyle.h \
@@ -63,6 +65,7 @@ HEADERS += \
 
 FORMS += \
     about.ui \
+    cartconv.ui \
     choosetopic.ui \
     hexsearchdialog.ui \
     mainwindow.ui \

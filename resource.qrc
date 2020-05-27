@@ -74,5 +74,8 @@
         <file>images/saveselection.png</file>
         <file>style/fabric.png</file>
         <file>images/assembly.png</file>
+        <file>data/types.txt</file>
+        <file>exticon/crt.png</file>
+        <file>images/cartridge.png</file>
     </qresource>
 </RCC>

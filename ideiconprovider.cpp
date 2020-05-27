@@ -15,6 +15,7 @@ IdeIconProvider::IdeIconProvider() :
     m_d71(QIcon(":/res/exticon/d71.png")),
     m_d81(QIcon(":/res/exticon/d81.png")),
     m_vs(QIcon(":/res/exticon/vs.png")),
+    m_crt(QIcon(":/res/exticon/crt.png")),
     m_undefined(QIcon(":/res/exticon/undefined.png"))
 {
 
@@ -49,6 +50,7 @@ QIcon IdeIconProvider::icon(const QFileInfo &info) const
         if(info.suffix()=="d71") return m_d71;  // d71
         if(info.suffix()=="d81") return m_d81;  // d81
         if(info.suffix()=="vs") return m_vs;  // vs
+        if(info.suffix()=="crt") return m_crt;  // crt
     }
 
     return m_undefined; // undefined or others

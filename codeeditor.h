@@ -62,6 +62,7 @@ signals:
     void updateLineNumber(quint64 currentLine, int delta);
     void showFindDialog();
     void overWriteModeChanged();
+    void AfterEnterSendLine(QString line);
 };
 
 class LineNumberArea : public QWidget

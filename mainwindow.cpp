@@ -97,6 +97,7 @@ MainWindow::MainWindow(QWidget *parent)
     menuRename = new QAction(QIcon(":/res/images/rename.png"), tr("Rename"), this);
     menuHexEditor = new QAction(QIcon(":/res/images/binary.png"), tr("Open with HexEditor"), this);
     menuAssemblyFile = new QAction(QIcon(":/res/images/assembly.png"), tr("Set Assembly File"), this);
+    menuCartConv = new QAction(QIcon(":/res/images/cartridge.png"), tr("Convert to CRT"), this);
 
     connect(menuEmulator, SIGNAL(triggered()), this, SLOT(RunInEmulator()));
     connect(menuExomizer, SIGNAL(triggered()), this, SLOT(Compress()));
@@ -107,7 +108,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(menuRename, SIGNAL(triggered()), this, SLOT(Rename()));
     connect(menuHexEditor, SIGNAL(triggered()), this, SLOT(OpenWithHexEditor()));
     connect(menuAssemblyFile, SIGNAL(triggered()), this, SLOT(SetAssemblyFile()));
-
+    connect(menuCartConv, SIGNAL(triggered()), this, SLOT(ConvertToCrt()));
 
     fileContextMenu->addAction(menuEmulator);
     fileContextMenu->addAction(menuExomizer);
@@ -119,6 +120,7 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
     fileContextMenu->addAction(menuSidPlayer);
     fileContextMenu->addAction(menuHexEditor);
+    fileContextMenu->addAction(menuCartConv);
     fileContextMenu->addSeparator();
     fileContextMenu->addAction(menuAssemblyFile);
     fileContextMenu->addSeparator();
@@ -142,8 +144,13 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     // completer
+    QString strUserCompleterFile = QDir::cleanPath(Common::appConfigDir()+QDir::separator()+"userCompleter.dat");
+
     completer = new QCompleter(this);
-    completer->setModel(modelFromFile(":/res/completer/kickass.dat"));
+    if(QFile(strUserCompleterFile).exists())
+        completer->setModel(modelFromFile(strUserCompleterFile));
+    else
+        completer->setModel(modelFromFile(":/res/completer/kickass.dat"));
     completer->setModelSorting(QCompleter::CaseSensitivelySortedModel);
     completer->setCaseSensitivity(Qt::CaseSensitive);
     completer->setWrapAround(false);
@@ -338,6 +345,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     // hex search dialog
     hexSearchDialog = new HexSearchDialog(hexEdit, this);
+
+    // cartconv
+    cc = new CartConv(this);
 }
 
 MainWindow::~MainWindow()
@@ -630,6 +640,7 @@ void MainWindow::openFileFromPath(QString filenamePath)
         connect(tab->code, SIGNAL(updateLineNumber(quint64, int)), this, SLOT(updateLineNumberSlot(quint64, int)));
         connect(tab->code, SIGNAL(showFindDialog()), this, SLOT(showFind()));
         connect(tab->code, SIGNAL(overWriteModeChanged()), this, SLOT(SetCursorPos()));
+        connect(tab->code, SIGNAL(AfterEnterSendLine(QString)), this, SLOT(ReceiveLineForCompleter(QString)));
 
         tab->code->document()->setModified(false);
         tab->code->setCompleter(completer);
@@ -688,6 +699,7 @@ void MainWindow::openWorkspace(QString wDir)
                                       << "*.a"
                                       << "*.inc"
                                       << "*.vs"
+                                      << "*.crt"
                                       );
     m_ptrModelForTree->setNameFilterDisables(true);
     m_ptrModelForTree->setIconProvider(icProvider);
@@ -812,6 +824,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
         OpenCode();
         writeSettings();
         closeAll();
+        saveUserCompleter();
         event->accept();
     }
     else
@@ -1339,6 +1352,19 @@ void MainWindow::prepareBeforeOpen(QString filename)
     }
 }
 
+void MainWindow::saveUserCompleter()
+{
+    QStringList strModelList = qobject_cast<QStringListModel*>(completer->model())->stringList(); // default + user completer words
+    QFile fOut(QDir::cleanPath(Common::appConfigDir() + QDir::separator() + "userCompleter.dat"));
+    if (fOut.open(QFile::WriteOnly | QFile::Text))
+    {
+        QTextStream stream(&fOut);
+        for (int i = 0; i < strModelList.size(); ++i)
+        stream << strModelList.at(i) << '\n';
+    }
+    fOut.close();
+}
+
 void MainWindow::on_tIssues_cellDoubleClicked(int row, int column)
 {
     Q_UNUSED(column)
@@ -1782,6 +1808,14 @@ void MainWindow::SetAssemblyFile()
     settings.sync();
 }
 
+void MainWindow::ConvertToCrt()
+{
+    cc->setPrgFilePath(filePath);
+    QFileInfo fi(filePath);
+    cc->setCartName(fi.fileName().remove("."+fi.completeSuffix()));
+    emit on_actionCartridge_Conversion_Utility_triggered();
+}
+
 void MainWindow::OpenCode()
 { 
     RestoreDocks();
@@ -2008,6 +2042,36 @@ void MainWindow::memoryViewerCurrentCoordinateChanged(int x, int y)
     ui->scaledMemoryViewer->setPixmap(px.scaled(zww, zwh, Qt::KeepAspectRatioByExpanding));
 }
 
+void MainWindow::ReceiveLineForCompleter(QString line)
+{
+    QString newLine = line.replace('\t', ' ').replace(':', ' ').replace('#', ' ').replace('$', ' ').replace('.', ' ').replace('/', ' ').replace('*', ' ').replace('"', ' ').trimmed();
+    QStringList newWords = newLine.split(' ');
+
+    QStringListModel *strModel = qobject_cast<QStringListModel*>(completer->model());
+
+    if(strModel!=NULL)
+    {
+        for(int i=0;i<newWords.length();i++)
+        {
+            bool matched = false;
+            foreach(QString str, strModel->stringList())
+            {
+                if(str==newWords[i])
+                {
+                    matched = true;
+                    break;
+                }
+            }
+
+            if(!matched)
+            {
+                // adding new word to your completer list
+                strModel->setStringList(strModel->stringList() << newWords[i]);
+            }
+        }
+    }
+}
+
 void MainWindow::memoryViewerCurrentAddressChanged(int)
 {
     ui->lCurrentAddress->setText(ui->memoryViewer->getCurrentAddressString().toUpper());
@@ -2149,6 +2213,9 @@ void MainWindow::writeSettings()
 
     pSIDPlayer = settingsWin->getSIDPlayer();
     settings.setValue("SIDPlayer", pSIDPlayer);
+
+    pCartconv = settingsWin->getCartconv();
+    settings.setValue("CartConv", pCartconv);
 
     pC1541 = settingsWin->getC1541();
     settings.setValue("C1541", pC1541);
@@ -2317,7 +2384,14 @@ void MainWindow::readSettingsOptionsOnly()
     settingsWin->setSIDPlayer(pSIDPlayer);
     pSIDPlayerParameters = settings.value("SIDPlayerParameters", "<sidfile>").toString();
     settingsWin->setSIDPlayerParameters(pSIDPlayerParameters);
-
+    pCartconv = settings.value("CartConv",
+                           #ifdef Q_OS_WIN
+                               "cartconv.exe"
+                           #else
+                               "cartconv"
+                           #endif
+                               ).toString();
+    settingsWin->setCartconv(pCartconv);
 }
 
 // About
@@ -2362,6 +2436,7 @@ void MainWindow::on_tvWorkspaceFiles_customContextMenuRequested(const QPoint &po
         menuSidPlayer->setVisible(false);
         menuHexEditor->setVisible(false);
         menuAssemblyFile->setVisible(false);
+        menuCartConv->setVisible(false);
 
         QFileInfo fi(filePath);
         QString ext = fi.completeSuffix();
@@ -2383,7 +2458,12 @@ void MainWindow::on_tvWorkspaceFiles_customContextMenuRequested(const QPoint &po
             menuEmulator->setVisible(true);
             menuExomizer->setVisible(true);
             menuDirmaster->setVisible(true);
-            menuHexEditor->setVisible(true);
+            menuHexEditor->setVisible(true);          
+        }
+
+        if(ext=="prg") // only prg
+        {
+            menuCartConv->setVisible(true);
         }
 
         if(ext=="sid")
@@ -2402,9 +2482,13 @@ void MainWindow::on_tvWorkspaceFiles_customContextMenuRequested(const QPoint &po
             menuAssemblyFile->setVisible(true);
         }
 
+        if(ext=="crt")
+        {
+            menuEmulator->setVisible(true);
+            menuHexEditor->setVisible(true);
+        }
 
         fileContextMenu->exec(ui->tvWorkspaceFiles->viewport()->mapToGlobal(pos));
-
     }
 }
 
@@ -2685,4 +2769,17 @@ void MainWindow::on_actionSet_Assembly_File_For_Current_Tab_triggered()
     Tab *tab = /*(Tab *)*/ static_cast<Tab*>( ui->tabWidget->widget(crIndex));
     filePath = tab->getCurrentFilePath();
     SetAssemblyFile();
+}
+
+void MainWindow::on_actionCartridge_Conversion_Utility_triggered()
+{
+    if(!QFile::exists(pCartconv))
+    {
+        QMessageBox::information(this, "Error?", "Application (cartconv) not found. Check your settings.", QMessageBox::Ok);
+        return;
+    }
+
+    cc->setCartConvFilename(pCartconv);
+    cc->exec();
+    cc->clear();
 }

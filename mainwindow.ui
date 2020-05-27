@@ -711,6 +711,8 @@ QTabBar::close-button:pressed {
     </property>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
+    <addaction name="actionCartridge_Conversion_Utility"/>
+    <addaction name="separator"/>
     <addaction name="actionGenerate_File_Directive"/>
     <addaction name="actionGenerate_Disk_Directive"/>
     <addaction name="separator"/>
@@ -1811,6 +1813,11 @@ background-color: rgb(255, 0, 0);</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="actionCartridge_Conversion_Utility">
+   <property name="text">
+    <string>Cartridge Conversion Utility</string>
    </property>
   </action>
  </widget>

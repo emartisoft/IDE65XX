@@ -40,6 +40,7 @@ public:
     void setWordWrap(bool &value);  
     void setSIDPlayer(QString &value);
     void setSIDPlayerParameters(QString &value);
+    void setCartconv(QString &value);
 
     void setCmdLinesEnabledForDebug(bool debugdump = true, bool vicesymbols = true);
     bool getCmdLineDebugDump();
@@ -56,6 +57,7 @@ public:
     QString getDebugger();
     QString getSIDPlayer();
     QString getSIDPlayerParameters();
+    QString getCartconv();
     QString getBuildDir();
     bool getOpenLastUsedFiles();
     int getMaxRecentWorkspace();
@@ -126,6 +128,8 @@ private slots:
     void setHoxs64();
     void setMicro64();
     void setZ64K();
+
+    void on_bCartconv_clicked();
 
 private:
     Ui::SettingsWindow *ui;
