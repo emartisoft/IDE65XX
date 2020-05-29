@@ -1641,7 +1641,7 @@ QAbstractItemModel *MainWindow::modelFromFile(const QString &fileName)
 
 void MainWindow::HideDocks()
 {
-    dockState = saveState();
+    //dockState = saveState();
     ui->dwOutput->setVisible(false);
     ui->dwIssues->setVisible(false);
     ui->dwProjectExplorer->setVisible(false);
@@ -1657,7 +1657,13 @@ void MainWindow::HideDocks()
 
 void MainWindow::RestoreDocks()
 {
-    restoreState(dockState);
+    //restoreState(dockState);
+    const QVariant state = settings.value("DockState");
+    if (state.isValid())
+    {
+        restoreState(state.toByteArray());
+    }
+
     ui->menuView->menuAction()->setVisible(true);
     if(ui->tabWidget->count()>0)
     {

@@ -269,7 +269,7 @@ private:
 
     QLabel *statusCurPosInfo;
 
-    QByteArray dockState;
+    //QByteArray dockState;
     void HideDocks();
     void RestoreDocks();
 
