@@ -614,10 +614,14 @@ QTabBar::close-button:pressed {
               </size>
              </property>
              <property name="text">
-              <string>X</string>
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="resource.qrc">
+               <normaloff>:/res/style/close.png</normaloff>:/res/style/close.png</iconset>
              </property>
              <property name="flat">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -676,6 +680,9 @@ QTabBar::close-button:pressed {
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
+    <property name="tearOffEnabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Edit</string>
     </property>

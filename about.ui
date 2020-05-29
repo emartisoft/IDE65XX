@@ -107,7 +107,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">IDE 65XX 0.1.1</string>
+          <string notr="true">IDE 65XX 0.1.2</string>
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>

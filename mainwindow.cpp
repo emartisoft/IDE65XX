@@ -271,7 +271,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // set recent workspace for home
     UpdateRecentWorkspaces();
-    ui->menuEdit->setEnabled(false);
+    ui->menuEdit->menuAction()->setVisible(false);
     setActionsEnable(false);
 
     // output and issues dockwidgets
@@ -523,7 +523,7 @@ void MainWindow::closeFile(int index)
     }
 
     bool b = ui->tabWidget->count()>0;
-    ui->menuEdit->setEnabled(b);
+    ui->menuEdit->menuAction()->setVisible(b);
     setActionsEnableForDoc(b);
     ui->findDialog->setVisible(false);
     statusCurPosInfo->setVisible(ui->tabWidget->count()>0);
@@ -650,7 +650,7 @@ void MainWindow::openFileFromPath(QString filenamePath)
         QFontMetrics fm(tab->code->font());
         tab->code->setTabStopDistance(fm.horizontalAdvance(' ')*pTabSize); // tab distance
         ui->tabWidget->setTabIcon(ui->tabWidget->currentIndex(), icProvider->icon(fi));
-        ui->menuEdit->setEnabled(true);
+        ui->menuEdit->menuAction()->setVisible(true);
         ui->statusbar->showMessage("File Opened", TIMEOUT);
         watcher->addPath(filenamePath);
         setActionsEnable(true);
@@ -1649,8 +1649,8 @@ void MainWindow::HideDocks()
     ui->dwBookmarks->setVisible(false);
     ui->dwHexEditor->setVisible(false);
     ui->dwMemoryViewer->setVisible(false);
-    ui->menuView->setEnabled(false);
-    ui->menuEdit->setEnabled(false);
+    ui->menuView->menuAction()->setVisible(false);
+    ui->menuEdit->menuAction()->setVisible(false);
     setActionsEnable(false);
     statusCurPosInfo->setVisible(false);
 }
@@ -1658,10 +1658,10 @@ void MainWindow::HideDocks()
 void MainWindow::RestoreDocks()
 {
     restoreState(dockState);
-    ui->menuView->setEnabled(true);
+    ui->menuView->menuAction()->setVisible(true);
     if(ui->tabWidget->count()>0)
     {
-        ui->menuEdit->setEnabled(true);
+        ui->menuEdit->menuAction()->setVisible(true);
         statusCurPosInfo->setVisible(true);
         setActionsEnable(true);
     }
