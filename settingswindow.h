@@ -38,6 +38,8 @@ public:
     void setApplicationFont(QString fontName, int fontSize);
     void setApplicationTheme(int select);
     void setWordWrap(bool &value);  
+    void setShowAllCharacters(bool &value);
+    void setAutoCompletion(bool &value);
     void setSIDPlayer(QString &value);
     void setSIDPlayerParameters(QString &value);
     void setCartconv(QString &value);
@@ -65,6 +67,8 @@ public:
     QString getCodeFontName();
     int getCodeFontSize();
     bool getWordWrap();
+    bool getShowAllCharacters();
+    bool getAutoCompletion();
 
     bool restartRequired;
 

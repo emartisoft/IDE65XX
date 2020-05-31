@@ -59,6 +59,7 @@ public slots:
     void showContextMenu();
     void SetCursorPos();
     void showFind();
+    void showAllChars();
     void find(const QString &pattern, Qt::CaseSensitivity cs, bool all, bool replace,
                       const QString &replaceText = nullptr);
     void RunInEmulator();
@@ -163,6 +164,7 @@ private:
     QFileSystemModel *m_ptrModelForTree;
 
     QAction *findAction;
+    QAction *showAllCharsAction;
     QToolBar *leftToolBar;
 
     QString filePath; // selected file on workspace
@@ -222,6 +224,8 @@ private:
     QString pCodeFontName;
     int pCodeFontSize;
     bool pWordWrap;
+    bool pShowAllChars;
+    bool pAutoCompletion;
     int pZoom;
 
     bool bWelcome;

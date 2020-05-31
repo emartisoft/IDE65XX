@@ -130,6 +130,16 @@ void SettingsWindow::setWordWrap(bool &value)
     ui->cWordWrap->setChecked(value);
 }
 
+void SettingsWindow::setShowAllCharacters(bool &value)
+{
+    ui->cShowAllCharacters->setChecked(value);
+}
+
+void SettingsWindow::setAutoCompletion(bool &value)
+{
+    ui->cAutoCompletion->setChecked(value);
+}
+
 void SettingsWindow::setSIDPlayer(QString &value)
 {
     ui->tSIDPlayer->setText(value);
@@ -258,6 +268,16 @@ int SettingsWindow::getCodeFontSize()
 bool SettingsWindow::getWordWrap()
 {
     return ui->cWordWrap->isChecked();
+}
+
+bool SettingsWindow::getShowAllCharacters()
+{
+    return ui->cShowAllCharacters->isChecked();
+}
+
+bool SettingsWindow::getAutoCompletion()
+{
+    return ui->cAutoCompletion->isChecked();
 }
 
 void SettingsWindow::on_bKickAssJar_clicked()

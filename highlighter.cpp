@@ -81,7 +81,7 @@ Highlighter::Highlighter(QTextDocument *parent)
     // label
     labelFormat.setFontWeight(QFont::ExtraBold);
     labelFormat.setFontItalic(true);
-    labelFormat.setForeground(QColor(0xf3, 0x34, 0x34));
+    labelFormat.setForeground(QColor(0xc3, 0x34, 0x34));
     rule.pattern = QRegularExpression(QStringLiteral("\\S+:"));
     rule.format = labelFormat;
     highlightingRules.append(rule);

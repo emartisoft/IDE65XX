@@ -39,6 +39,10 @@ MainWindow::MainWindow(QWidget *parent)
     findAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_F));
     connect(findAction, SIGNAL(triggered()), this, SLOT(showFind()));
 
+    // show all chars
+    showAllCharsAction = new QAction(QIcon(":/res/images/whitespace.png"), tr("Toggle Show All Characters"), this);
+    connect(showAllCharsAction, SIGNAL(triggered()), this, SLOT(showAllChars()));
+
     // action for left toolbar
     menuCode = new QAction(QIcon(":/res/images/coding.png"), tr("Code"), this);
     menuCode->setEnabled(false);
@@ -453,6 +457,7 @@ void MainWindow::showContextMenu()
     Tab *tab = static_cast<Tab*>( ui->tabWidget->widget(ui->tabWidget->currentIndex()));
     ui->menuEdit->clear();
     ui->menuEdit->addAction(findAction);
+    ui->menuEdit->addAction(showAllCharsAction);
     ui->menuEdit->addSeparator();
     ui->menuEdit->addActions(tab->code->getContextMenu()->actions());  
 }
@@ -477,6 +482,19 @@ void MainWindow::showFind()
     ui->tFind->setText(tab->code->textCursor().selectedText());
 
     (!fv) ? ui->tFind->setFocus() : tab->code->setFocus();
+}
+
+void MainWindow::showAllChars()
+{
+    Tab *tab = static_cast<Tab*>( ui->tabWidget->currentWidget());
+    QTextOption option;
+    tab->code->setShowAllChars(!tab->code->getShowAllChars());
+    if(tab->code->getShowAllChars())
+        option.setFlags(QTextOption::ShowLineAndParagraphSeparators | QTextOption::ShowTabsAndSpaces | QTextOption::ShowDocumentTerminator);
+    option.setWrapMode((pWordWrap)? QTextOption::WordWrap : QTextOption::NoWrap);
+    QFontMetrics fm(tab->code->font());
+    option.setTabStopDistance(fm.horizontalAdvance(' ')*pTabSize);
+    tab->code->document()->setDefaultTextOption(option);
 }
 
 /*! close file
@@ -646,9 +664,18 @@ void MainWindow::openFileFromPath(QString filenamePath)
         tab->code->setCompleter(completer);
         tab->code->setFocus();
         tab->code->setFont(QFont(pCodeFontName, pCodeFontSize));
-        tab->code->setWordWrapMode((pWordWrap)? QTextOption::WordWrap : QTextOption::NoWrap);
+
+        QTextOption option;
+        if(pShowAllChars)
+            option.setFlags(QTextOption::ShowLineAndParagraphSeparators | QTextOption::ShowTabsAndSpaces | QTextOption::ShowDocumentTerminator);
+        option.setWrapMode((pWordWrap)? QTextOption::WordWrap : QTextOption::NoWrap);
         QFontMetrics fm(tab->code->font());
-        tab->code->setTabStopDistance(fm.horizontalAdvance(' ')*pTabSize); // tab distance
+        option.setTabStopDistance(fm.horizontalAdvance(' ')*pTabSize); // tab distance
+        tab->code->document()->setDefaultTextOption(option);
+        tab->code->setShowAllChars(pShowAllChars);
+        tab->code->setAutoCompletion(pAutoCompletion);
+
+
         ui->tabWidget->setTabIcon(ui->tabWidget->currentIndex(), icProvider->icon(fi));
         ui->menuEdit->menuAction()->setVisible(true);
         ui->statusbar->showMessage("File Opened", TIMEOUT);
@@ -809,6 +836,7 @@ void MainWindow::setTopToolbar(int index)
         Tab *tab = static_cast<Tab*>( ui->tabWidget->widget(index));
         ui->topToolBar->addSeparator();
         ui->topToolBar->addAction(findAction);
+        ui->topToolBar->addAction(showAllCharsAction);
         ui->topToolBar->addActions(tab->code->getContextMenu()->actions());
     }
 }
@@ -2142,11 +2170,19 @@ void MainWindow::on_actionSettings_triggered()
         // if tab has opened source
         for (int i = 0; i < ui->tabWidget->count(); i++)
         {
-            Tab *tab = static_cast<Tab*>( ui->tabWidget->widget(i));
-            tab->code->setWordWrapMode((pWordWrap)? QTextOption::WordWrap : QTextOption::NoWrap);
-            tab->code->setFont(QFont(pCodeFontName, pCodeFontSize));
+            Tab *tab = static_cast<Tab*>( ui->tabWidget->widget(i)); 
+            QTextOption option;
+            if(pShowAllChars)
+                option.setFlags(QTextOption::ShowLineAndParagraphSeparators | QTextOption::ShowTabsAndSpaces | QTextOption::ShowDocumentTerminator);
+            option.setWrapMode((pWordWrap)? QTextOption::WordWrap : QTextOption::NoWrap);
             QFontMetrics fm(tab->code->font());
-            tab->code->setTabStopDistance(fm.horizontalAdvance(' ')*pTabSize);
+            option.setTabStopDistance(fm.horizontalAdvance(' ')*pTabSize);
+            tab->code->document()->setDefaultTextOption(option);
+            tab->code->setShowAllChars(pShowAllChars);
+            tab->code->setAutoCompletion(pAutoCompletion);
+
+            tab->code->setFont(QFont(pCodeFontName, pCodeFontSize));
+
         }
 
         // restart required?
@@ -2240,6 +2276,9 @@ void MainWindow::writeSettings()
     pTabSize = settingsWin->getTabSize();
     settings.setValue("TabSize", pTabSize);
 
+    pAutoCompletion = settingsWin->getAutoCompletion();
+    settings.setValue("AutoCompletion", pAutoCompletion);
+
     pCodeFontName = settingsWin->getCodeFontName();
     settings.setValue("CodeFontName", pCodeFontName);
 
@@ -2248,6 +2287,9 @@ void MainWindow::writeSettings()
 
     pWordWrap = settingsWin->getWordWrap();
     settings.setValue("WordWrap", pWordWrap);
+
+    pShowAllChars = settingsWin->getShowAllCharacters();
+    settings.setValue("ShowAllChars", pShowAllChars);
 
     settings.sync();
 
@@ -2372,6 +2414,8 @@ void MainWindow::readSettingsOptionsOnly()
     settingsWin->setMaxRecentWorkspace(pMaxRecentWorkspace);
     pTabSize = settings.value("TabSize", 10).toInt();
     settingsWin->setTabSize(pTabSize);
+    pAutoCompletion = settings.value("AutoCompletion", true).toBool();
+    settingsWin->setAutoCompletion(pAutoCompletion);
     pCodeFontName = settings.value("CodeFontName", "Ubuntu Mono").toString();
     settingsWin->setCodeFontName(pCodeFontName);
     pCodeFontSize = settings.value("CodeFontSize", 12).toInt();
@@ -2380,6 +2424,8 @@ void MainWindow::readSettingsOptionsOnly()
     settingsWin->setApplicationTheme(settings.value("ApplicationStyle", 3).toInt());
     pWordWrap = settings.value("WordWrap", false).toBool();
     settingsWin->setWordWrap(pWordWrap);
+    pShowAllChars = settings.value("ShowAllChars", false).toBool();
+    settingsWin->setShowAllCharacters(pShowAllChars);
     pSIDPlayer = settings.value("SIDPlayer",
                             #ifdef Q_OS_WIN
                                 "vsid.exe"

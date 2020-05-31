@@ -41,7 +41,7 @@
       <number>0</number>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="pGeneral">
       <property name="geometry">
@@ -49,7 +49,7 @@
         <x>0</x>
         <y>0</y>
         <width>761</width>
-        <height>579</height>
+        <height>625</height>
        </rect>
       </property>
       <attribute name="label">
@@ -151,6 +151,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="cAutoCompletion">
+         <property name="text">
+          <string>Open auto-completion without press CTRL+SPACE automatically</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_51">
          <item>
           <widget class="QGroupBox" name="groupBox">
@@ -209,6 +216,13 @@
         <widget class="QCheckBox" name="cWordWrap">
          <property name="text">
           <string>Enable text wrapping</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cShowAllCharacters">
+         <property name="text">
+          <string>Show All Characters (spaces, tabs, line and paragraph separators)</string>
          </property>
         </widget>
        </item>
@@ -426,7 +440,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-200</y>
+        <y>0</y>
         <width>761</width>
         <height>668</height>
        </rect>

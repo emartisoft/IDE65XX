@@ -443,7 +443,7 @@ td,th{
  </pre><hr><pre><span class="optitle"  id="CMP">CMP</span><br>Compare Memory with Accumulator
 
      A - M                            N Z C I D V
-                                    + + + - - -
+                                      + + + - - -
 
      Addressing    Mnemonics    OPC  Bytes  Cycles
      ---------------------------------------------
@@ -1715,7 +1715,7 @@ The processor pauses at the current location until the next interrupt occurs.
                 </tr>
                 <tr>
                    <td id="FOR">.for</td>
-                   <td>.for(var i;i&lt;10;i++) {...}</td>
+                   <td>.for(var i=0;i&lt;10;i++) {...}</td>
                    <td>Creates a for loop.</td>
                 </tr>
                 <tr>

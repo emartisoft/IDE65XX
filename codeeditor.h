@@ -31,6 +31,10 @@ public:
     QList<int> bookmarks;
     QString getHelpWord();
 
+    bool getShowAllChars(){ return showAllChars; };
+    void setShowAllChars(bool value){ showAllChars = value; };
+    void setAutoCompletion(bool value) {cAutoCompletion=value;}
+
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
@@ -56,6 +60,8 @@ private:
     int bookmarkAreaWidth;
     QString tooltipWord;
     bool tooltipShowing;
+    bool showAllChars;
+    bool cAutoCompletion;
 
 signals:
     void bookmarksChanged(quint64 lineNumber, QString text, bool isAdded);

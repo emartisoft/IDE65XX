@@ -206,7 +206,7 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
     }
 
     // bookmark
-    else if( (event->modifiers().testFlag(Qt::ControlModifier) && event->key() == Qt::Key_B)) // CTRL + B
+    if( (event->modifiers().testFlag(Qt::ControlModifier) && event->key() == Qt::Key_B)) // CTRL + B
     {
         setBookmarkOnCurrentLine();
     }
@@ -259,11 +259,14 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
         c->popup()->setCurrentIndex(c->completionModel()->index(0, 0));
     }
 
-    QRect cr = cursorRect();
-    cr.setWidth(c->popup()->sizeHintForColumn(0)
-                + c->popup()->verticalScrollBar()->sizeHint().width());
+    if(cAutoCompletion || isShortcut)
+    {
+        QRect cr = cursorRect();
+        cr.setWidth(c->popup()->sizeHintForColumn(0)
+                    + c->popup()->verticalScrollBar()->sizeHint().width());
+        c->complete(cr);
+    }
 
-    c->complete(cr);
 }
 
 bool CodeEditor::event(QEvent *event)

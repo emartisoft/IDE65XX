@@ -86,3 +86,4 @@ DISTFILES += \
 # macos app
 ICON = icon/ide65xx.icns
 
+TARGET = IDE65XX

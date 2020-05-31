@@ -77,5 +77,6 @@
         <file>data/types.txt</file>
         <file>exticon/crt.png</file>
         <file>images/cartridge.png</file>
+        <file>images/whitespace.png</file>
     </qresource>
 </RCC>
