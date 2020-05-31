@@ -153,7 +153,7 @@
        <item>
         <widget class="QCheckBox" name="cAutoCompletion">
          <property name="text">
-          <string>Open auto-completion without press CTRL+SPACE automatically</string>
+          <string>Activate completion without triggered</string>
          </property>
         </widget>
        </item>
