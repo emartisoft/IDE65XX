@@ -3,6 +3,7 @@
 
 #include <QProxyStyle>
 #include <QPalette>
+#include <QPainterPath>
 
 QT_BEGIN_NAMESPACE
 class QPainterPath;

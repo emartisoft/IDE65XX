@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include <QStyleFactory>
 
+
 FabricStyle::FabricStyle() : QProxyStyle(QStyleFactory::create("fusion"))
 {
     setObjectName("FabricStyle");

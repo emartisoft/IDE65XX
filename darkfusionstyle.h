@@ -3,6 +3,7 @@
 
 #include <QProxyStyle>
 #include <QStyleFactory>
+#include <QPainterPath>
 
 class DarkFusionStyle : public QProxyStyle
 {
