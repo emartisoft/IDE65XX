@@ -1506,7 +1506,7 @@ void MainWindow::find(const QString &pattern, Qt::CaseSensitivity cs, bool all, 
                     if (cs == Qt::CaseSensitive)
                         newCursor = document->find(pattern, newCursor, QTextDocument::FindCaseSensitively);
                     else
-                        newCursor = document->find(pattern, newCursor, nullptr);
+                        newCursor = document->find(pattern, newCursor);
                     // Replace mode
                     if (replace && i == ui->tabWidget->currentIndex())
                     {
@@ -1540,14 +1540,14 @@ void MainWindow::find(const QString &pattern, Qt::CaseSensitivity cs, bool all, 
             if (cs == Qt::CaseSensitive)
                 newCursor = document->find(pattern, newCursor, QTextDocument::FindCaseSensitively);
             else
-                newCursor = document->find(pattern, newCursor, nullptr);
+                newCursor = document->find(pattern, newCursor);
             // Continue from start
             if (newCursor.isNull())
             {
                 if (cs == Qt::CaseSensitive)
                     newCursor = document->find(pattern, newCursor, QTextDocument::FindCaseSensitively);
                 else
-                    newCursor = document->find(pattern, newCursor, nullptr);
+                    newCursor = document->find(pattern, newCursor);
             }
             if (!newCursor.isNull())
             {

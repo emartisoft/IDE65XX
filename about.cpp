@@ -2,6 +2,7 @@
 #include "ui_about.h"
 
 #include <QMessageBox>
+#include "version.h"
 
 About::About(QWidget *parent) :
     QDialog(parent),
@@ -9,6 +10,7 @@ About::About(QWidget *parent) :
 {
     setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
     ui->setupUi(this);
+    ui->version->setText("IDE 65XX " + QString(VER_FILEVERSION_STR));
 }
 
 About::~About()

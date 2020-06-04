@@ -92,7 +92,7 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="version">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
            <horstretch>0</horstretch>
@@ -107,7 +107,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">IDE 65XX 0.1.2</string>
+          <string notr="true">IDE 65XX x.x.x</string>
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -166,8 +166,7 @@
           </font>
          </property>
          <property name="text">
-          <string notr="true">Built on May 30, 2020
-Licensed under the GNU GPL V3.0
+          <string notr="true">IDE 65XX licensed under the GNU GPL V3.0
 
 All images designed by emarti, Murat Özdemir
 Licensed under the Attribution-NonCommercial 4.0 (CC BY-NC 4.0)</string>
