@@ -502,15 +502,14 @@ void MainWindow::showAllChars()
 void MainWindow::closeFile(int index)
 {
     Tab *tabForDeleting = static_cast<Tab*>( ui->tabWidget->widget(index));
-    bool closing = true;
 
     QString tabText = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
     if (tabText[0] == '*')
     {
-        int ret = QMessageBox::question(this, "Save",
+        int ret = QMessageBox::question(this, "Save before closing",
                                          "Do you want to save your changes?\n"
                                          "Save file [" + tabForDeleting->getCurrentFilePath() + "]?",
-                                         QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,  QMessageBox::Save);
+                                         QMessageBox::Save | QMessageBox::Discard,  QMessageBox::Save);
 
 
         switch (ret) {
@@ -518,27 +517,17 @@ void MainWindow::closeFile(int index)
                 // Save was clicked
                     saveFile(index);
                 break;
-            case QMessageBox::Discard:
-                // Don't Save was clicked
-                break;
-            case QMessageBox::Cancel:
-                // Cancel was clicked
-                closing = false;
-                break;
             default:
                 // should never be reached
                 break;
           }
     }
 
-    if (closing)
-    {
-        watcher->removePath(tabForDeleting->getCurrentFilePath());
-        ui->tabWidget->removeTab(index);
-        delete tabForDeleting;
-        ui->statusbar->showMessage("File closed", TIMEOUT);
-        RefreshOpenDocuments();
-    }
+    watcher->removePath(tabForDeleting->getCurrentFilePath());
+    ui->tabWidget->removeTab(index);
+    delete tabForDeleting;
+    ui->statusbar->showMessage("File closed", TIMEOUT);
+    RefreshOpenDocuments();
 
     bool b = ui->tabWidget->count()>0;
     ui->menuEdit->menuAction()->setVisible(b);
