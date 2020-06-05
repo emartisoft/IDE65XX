@@ -148,7 +148,8 @@ void BasePlainTextEdit::wheelEvent(QWheelEvent *e)
 {
     if( e->modifiers() == Qt::ControlModifier )
     {
-        if(e->delta() > 0)
+        QPoint aDelta = e->angleDelta();
+        if(aDelta.y() > 0)
         {
 
             if(zoom < ZOOM){
