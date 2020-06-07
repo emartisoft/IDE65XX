@@ -10,12 +10,6 @@
     <height>763</height>
    </rect>
   </property>
-  <property name="minimumSize">
-   <size>
-    <width>1024</width>
-    <height>700</height>
-   </size>
-  </property>
   <property name="windowTitle">
    <string>IDE 65XX</string>
   </property>
@@ -676,6 +670,7 @@ QTabBar::close-button:pressed {
     <addaction name="actionKick_Assembler_Web_Manual"/>
     <addaction name="separator"/>
     <addaction name="actionReport_An_Issue"/>
+    <addaction name="actionIDE_65XX_Home_Page"/>
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
    </widget>
@@ -780,7 +775,7 @@ QTabBar::close-button:pressed {
   <widget class="QDockWidget" name="dwProjectExplorer">
    <property name="minimumSize">
     <size>
-     <width>218</width>
+     <width>204</width>
      <height>168</height>
     </size>
    </property>
@@ -891,7 +886,7 @@ QTabBar::close-button:pressed {
   <widget class="QDockWidget" name="dwOutput">
    <property name="minimumSize">
     <size>
-     <width>81</width>
+     <width>77</width>
      <height>120</height>
     </size>
    </property>
@@ -946,7 +941,7 @@ QTabBar::close-button:pressed {
   <widget class="QDockWidget" name="dwOpenDocument">
    <property name="minimumSize">
     <size>
-     <width>208</width>
+     <width>0</width>
      <height>113</height>
     </size>
    </property>
@@ -995,7 +990,7 @@ QTabBar::close-button:pressed {
   <widget class="QDockWidget" name="dwBookmarks">
    <property name="minimumSize">
     <size>
-     <width>200</width>
+     <width>0</width>
      <height>45</height>
     </size>
    </property>
@@ -1013,7 +1008,7 @@ QTabBar::close-button:pressed {
   <widget class="QDockWidget" name="dwIssues">
    <property name="minimumSize">
     <size>
-     <width>91</width>
+     <width>77</width>
      <height>120</height>
     </size>
    </property>
@@ -1137,7 +1132,7 @@ QTabBar::close-button:pressed {
   <widget class="QDockWidget" name="dwMemoryViewer">
    <property name="minimumSize">
     <size>
-     <width>250</width>
+     <width>0</width>
      <height>361</height>
     </size>
    </property>
@@ -1425,7 +1420,7 @@ background-color: rgb(255, 0, 0);</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>225</width>
+          <width>173</width>
           <height>260</height>
          </rect>
         </property>
@@ -1499,8 +1494,8 @@ background-color: rgb(255, 0, 0);</string>
   <widget class="QDockWidget" name="dwHexEditor">
    <property name="minimumSize">
     <size>
-     <width>250</width>
-     <height>44</height>
+     <width>179</width>
+     <height>75</height>
     </size>
    </property>
    <property name="allowedAreas">
@@ -1515,13 +1510,13 @@ background-color: rgb(255, 0, 0);</string>
    <widget class="QWidget" name="dockHexEditWidget">
     <layout class="QVBoxLayout" name="verticalLayout_hexeditor">
      <property name="spacing">
-      <number>2</number>
+      <number>4</number>
      </property>
      <property name="leftMargin">
       <number>2</number>
      </property>
      <property name="topMargin">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="rightMargin">
       <number>2</number>
@@ -1529,6 +1524,73 @@ background-color: rgb(255, 0, 0);</string>
      <property name="bottomMargin">
       <number>2</number>
      </property>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_10">
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <item>
+        <widget class="QSpinBox" name="bytesPerLine">
+         <property name="frame">
+          <bool>true</bool>
+         </property>
+         <property name="suffix">
+          <string notr="true"> bytes per line</string>
+         </property>
+         <property name="minimum">
+          <number>8</number>
+         </property>
+         <property name="maximum">
+          <number>256</number>
+         </property>
+         <property name="singleStep">
+          <number>8</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Line" name="line_8">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>8</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>8</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>8</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="hexInsert">
+         <property name="text">
+          <string>Insert</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
      <item>
       <widget class="Line" name="line_5">
        <property name="orientation">
@@ -1825,6 +1887,11 @@ background-color: rgb(255, 0, 0);</string>
   <action name="actionCartridge_Conversion_Utility">
    <property name="text">
     <string>Cartridge Conversion Utility</string>
+   </property>
+  </action>
+  <action name="actionIDE_65XX_Home_Page">
+   <property name="text">
+    <string>IDE 65XX Home Page</string>
    </property>
   </action>
  </widget>

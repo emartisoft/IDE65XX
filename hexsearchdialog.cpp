@@ -26,7 +26,7 @@ qint64 HexSearchDialog::findNext()
     if (_findBa.length() > 0)
     {
         if (ui->cbBackwards->isChecked())
-            idx = _hexEdit->lastIndexOf(_findBa, from);
+            idx = _hexEdit->lastIndexOf(_findBa, from*2);
         else
             idx = _hexEdit->indexOf(_findBa, from);
     }

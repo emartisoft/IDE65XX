@@ -193,6 +193,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->verticalLayout_hexeditor->insertWidget(0, toolbar);
 
+    QAction* hNew = new QAction(QIcon(":/res/images/new.png"), "New", this);
+    toolbar->addAction(hNew);
+    connect(hNew, SIGNAL(triggered()), this, SLOT(hexNewFile()));
+
     QAction* hOpen = new QAction(QIcon(":/res/images/open.png"), "Open", this);
     toolbar->addAction(hOpen);
     connect(hOpen, SIGNAL(triggered()), this, SLOT(hexFileOpen()));
@@ -225,24 +229,8 @@ MainWindow::MainWindow(QWidget *parent)
     toolbar->addAction(hFindReplace);
     connect(hFindReplace, SIGNAL(triggered()), this, SLOT(hexFileFindReplace()));
 
-    toolbar->addSeparator();
-
-    bytesPerLine = new QSpinBox(this);
-    bytesPerLine->setValue(8);
-    bytesPerLine->setMaximum(64);
-    bytesPerLine->setMinimum(8);
-    bytesPerLine->setSingleStep(8);
-    toolbar->addWidget(bytesPerLine);
-    connect(bytesPerLine, SIGNAL(valueChanged(int)), this, SLOT(bytesperlineValueChanged(int)));
-
-    toolbar->addWidget(new QLabel(" bytes per line", this));
-
-    toolbar->addSeparator();
-
-    hexInsert = new QCheckBox("Insert Mode", this);
-    hexInsert->setChecked(false);
-    toolbar->addWidget(hexInsert);
-    connect(hexInsert, SIGNAL(clicked(bool)), this, SLOT(setOverwriteMode(bool)));
+    connect(ui->bytesPerLine, SIGNAL(valueChanged(int)), this, SLOT(bytesperlineValueChanged(int)));
+    connect(ui->hexInsert, SIGNAL(clicked(bool)), this, SLOT(setOverwriteMode(bool)));
 
     hexFilename = new QLabel("???", this);
     ui->verticalLayout_hexeditor->addWidget(hexFilename);
@@ -252,7 +240,7 @@ MainWindow::MainWindow(QWidget *parent)
     hexEdit->setFrameShape(QFrame::Box);
     hexEdit->setFrameShadow(QFrame::Sunken);
     hexEdit->setFont(QFont(pCodeFontName, pCodeFontSize));
-    hexEdit->setOverwriteMode(!hexInsert->isChecked());
+    hexEdit->setOverwriteMode(!ui->hexInsert->isChecked());
     hexEdit->setReadOnly(false);
 
     hexEdit->setAddressArea(true);
@@ -2725,6 +2713,42 @@ void MainWindow::hexFileOpen()
     }
 }
 
+void MainWindow::hexNewFile()
+{
+    QString hnfileName = QFileDialog::getSaveFileName(this, "New Hex File", workspacePath, "Binary files (*.bin; *.prg)");
+    if (!hnfileName.isEmpty())
+    {
+        QFileInfo fi(hnfileName);
+        QString ext = fi.completeSuffix();
+        QByteArray sa;
+        if(ext=="prg")
+        {
+            bool ok;
+            int startAddr = QInputDialog::getInt(this, "Start Address","Start Address:", 0x0000, 0x0000, 0xffff, 1, &ok);
+
+            if(!ok) return;
+            hexEdit->setAddressOffset(startAddr);
+            quint8 ls = hexEdit->addressOffset() & 0xff;
+            quint8 hs = (hexEdit->addressOffset() & 0xff00) >> 8;
+            sa[0] = ls;
+            sa[1] = hs;
+            sa[2] = 0;
+        }
+        else
+        {
+            sa[0] = 0;
+        }
+        hexEdit->setData(sa);
+        saveHexFile(hnfileName);
+        curHexFilename = hnfileName;
+        loadHexFile();
+        hexEdit->setOverwriteMode(false);
+        hexEdit->dataAt(0);
+        hexEdit->setFocus();
+        ui->hexInsert->setChecked(true);
+    }
+}
+
 void MainWindow::hexFileSaveselection()
 {
     if(hexEdit->selectedData().isEmpty()) return;
@@ -2823,4 +2847,9 @@ void MainWindow::on_actionCartridge_Conversion_Utility_triggered()
     cc->setCartConvFilename(pCartconv);
     cc->exec();
     cc->clear();
+}
+
+void MainWindow::on_actionIDE_65XX_Home_Page_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://sites.google.com/view/ide65xx"));
 }

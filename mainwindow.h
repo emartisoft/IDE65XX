@@ -153,11 +153,14 @@ private slots:
     void hexFileSaveas();
     void hexFileSave();
     void hexFileOpen();
+    void hexNewFile();
     void hexFileSaveselection();
 
     void on_actionSet_Assembly_File_For_Current_Tab_triggered();
 
     void on_actionCartridge_Conversion_Utility_triggered();
+
+    void on_actionIDE_65XX_Home_Page_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -237,8 +240,8 @@ private:
 
     QHexEdit *hexEdit;
     QLabel *hexFilename;
-    QSpinBox *bytesPerLine;
-    QCheckBox *hexInsert;
+//    QSpinBox *bytesPerLine;
+//    QCheckBox *hexInsert;
     QAction *hRedo;
     QAction *hUndo;
     QAction *hSave;
