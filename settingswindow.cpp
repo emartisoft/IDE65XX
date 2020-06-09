@@ -105,6 +105,11 @@ void SettingsWindow::setTabSize(int size)
     ui->spTabStopDistance->setValue(size);
 }
 
+void SettingsWindow::setTabPolicy(int index)
+{
+    ui->cTabPolicy->setCurrentIndex(index);
+}
+
 void SettingsWindow::setCodeFontName(QString &fontName)
 {
     ui->lOutput->setFont(QFont(fontName));
@@ -253,6 +258,11 @@ int SettingsWindow::getMaxRecentWorkspace()
 int SettingsWindow::getTabSize()
 {
     return ui->spTabStopDistance->value();
+}
+
+int SettingsWindow::getTabPolicy()
+{
+    return ui->cTabPolicy->currentIndex();
 }
 
 QString SettingsWindow::getCodeFontName()

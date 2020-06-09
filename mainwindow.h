@@ -224,6 +224,7 @@ private:
     bool pOpenLastUsedFiles;
     int pMaxRecentWorkspace;
     int pTabSize;
+    int pTabPolicy;
     QString pCodeFontName;
     int pCodeFontSize;
     bool pWordWrap;

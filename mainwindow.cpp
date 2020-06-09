@@ -651,7 +651,8 @@ void MainWindow::openFileFromPath(QString filenamePath)
         tab->code->document()->setDefaultTextOption(option);
         tab->code->setShowAllChars(pShowAllChars);
         tab->code->setAutoCompletion(pAutoCompletion);
-
+        tab->code->setTabSpace((pTabPolicy==0)?true:false);
+        tab->code->setTabSpaceCount(pTabSize);
 
         ui->tabWidget->setTabIcon(ui->tabWidget->currentIndex(), icProvider->icon(fi));
         ui->menuEdit->menuAction()->setVisible(true);
@@ -2159,6 +2160,8 @@ void MainWindow::on_actionSettings_triggered()
             tab->code->setAutoCompletion(pAutoCompletion);
 
             tab->code->setFont(QFont(pCodeFontName, pCodeFontSize));
+            tab->code->setTabSpace((pTabPolicy==0)?true:false);
+            tab->code->setTabSpaceCount(pTabSize);
 
         }
 
@@ -2252,6 +2255,9 @@ void MainWindow::writeSettings()
 
     pTabSize = settingsWin->getTabSize();
     settings.setValue("TabSize", pTabSize);
+
+    pTabPolicy = settingsWin->getTabPolicy();
+    settings.setValue("TabPolicy", pTabPolicy);
 
     pAutoCompletion = settingsWin->getAutoCompletion();
     settings.setValue("AutoCompletion", pAutoCompletion);
@@ -2389,8 +2395,10 @@ void MainWindow::readSettingsOptionsOnly()
     settingsWin->setDebugger(pDebugger);
     pMaxRecentWorkspace = settings.value("MaxRecentWorkspace", 10).toInt();
     settingsWin->setMaxRecentWorkspace(pMaxRecentWorkspace);
-    pTabSize = settings.value("TabSize", 10).toInt();
+    pTabSize = settings.value("TabSize", 4).toInt();
     settingsWin->setTabSize(pTabSize);
+    pTabPolicy = settings.value("TabPolicy", 0).toInt();
+    settingsWin->setTabPolicy(pTabPolicy);
     pAutoCompletion = settings.value("AutoCompletion", true).toBool();
     settingsWin->setAutoCompletion(pAutoCompletion);
     pCodeFontName = settings.value("CodeFontName", "Ubuntu Mono").toString();

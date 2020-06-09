@@ -12,6 +12,8 @@
 #include <QToolTip>
 #include "hint.h"
 
+#include <QDebug>
+
 CodeEditor::CodeEditor(QWidget *parent) : BasePlainTextEdit(parent),  
     lineNumberArea(new LineNumberArea(this)),
     bookmarkImage(":/res/images/bookmark.png"),
@@ -140,6 +142,16 @@ void CodeEditor::keyReleaseEvent(QKeyEvent *event)
         }
         emit overWriteModeChanged();
     }
+
+    if(event->key() == Qt::Key_Tab)
+    {
+        if(tabSpace)
+        {
+            QTextCursor tc = textCursor();
+            tc.deletePreviousChar();
+            tc.insertText(QString(tabSpaceCount, ' '));
+        }
+    }
 }
 
 void CodeEditor::focusInEvent(QFocusEvent *e)
@@ -196,7 +208,6 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
                     {
                             break;
                     }
-
                 }
                 insertPlainText(QString(tabCount, '\t')+QString(spcCount, ' '));
                 return;

@@ -33,6 +33,7 @@ public:
     void setOpenLastUsedFiles(bool open);
     void setMaxRecentWorkspace(int count);
     void setTabSize(int size);
+    void setTabPolicy(int index);
     void setCodeFontName(QString &fontName);
     void setCodeFontSize(int fontSize);
     void setApplicationFont(QString fontName, int fontSize);
@@ -64,6 +65,7 @@ public:
     bool getOpenLastUsedFiles();
     int getMaxRecentWorkspace();
     int getTabSize();
+    int getTabPolicy();
     QString getCodeFontName();
     int getCodeFontSize();
     bool getWordWrap();

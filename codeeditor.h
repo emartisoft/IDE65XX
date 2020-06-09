@@ -34,6 +34,8 @@ public:
     bool getShowAllChars(){ return showAllChars; };
     void setShowAllChars(bool value){ showAllChars = value; };
     void setAutoCompletion(bool value) {cAutoCompletion=value;}
+    void setTabSpaceCount(int value) { tabSpaceCount = value;}
+    void setTabSpace(bool value) { tabSpace = value;}
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -62,6 +64,8 @@ private:
     bool tooltipShowing;
     bool showAllChars;
     bool cAutoCompletion;
+    int tabSpaceCount;
+    bool tabSpace;
 
 signals:
     void bookmarksChanged(quint64 lineNumber, QString text, bool isAdded);
