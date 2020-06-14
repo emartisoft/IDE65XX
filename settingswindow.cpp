@@ -1,8 +1,6 @@
 #include "settingswindow.h"
 #include "ui_settingswindow.h"
 
-#include <QDebug>
-
 SettingsWindow::SettingsWindow(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SettingsWindow),
