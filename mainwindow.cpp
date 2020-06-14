@@ -2429,6 +2429,25 @@ void MainWindow::readSettingsOptionsOnly()
                            #endif
                                ).toString();
     settingsWin->setCartconv(pCartconv);
+
+    // custom style
+    settingsWin->setCustomBackgroundTexture(settings.value("CustomBackgroundTexture", ":/res/style/commodore_background.png").toString());
+    settingsWin->setCustomButtonTexture(settings.value("CustomButtonTexture", ":/res/style/commodore_button.png").toString());
+    settingsWin->setBackground(settings.value("CustomBackground", QColor(0xf0, 0xf0, 0xf0)).value<QColor>());
+    settingsWin->setBrightText(settings.value("CustomBrightText", QColor(255,255,255)).value<QColor>());
+    settingsWin->setBase(settings.value("CustomBase", QColor(0xc7, 0xc9, 0xcd)).value<QColor>());
+    settingsWin->setHighlights(settings.value("CustomHighlights", QColor(0xb1, 0xb1, 0xb1)).value<QColor>());
+    settingsWin->setDisable(settings.value("CustomDisable", QColor(64,64,64)).value<QColor>());
+    settingsWin->setOpcode(settings.value("CustomOpcode", QColor(0x61, 0x61, 0xd0)).value<QColor>());
+    settingsWin->setNumber(settings.value("CustomNumber", QColor(0x00, 0x80, 0x80)).value<QColor>());
+    settingsWin->setFunction(settings.value("CustomFunction", QColor(0xaf, 0x64, 0x00)).value<QColor>());
+    settingsWin->setAssemblerDir(settings.value("CustomAssemblerDir", QColor(0xaf, 0x64, 0x00)).value<QColor>());
+    settingsWin->setPreprocessorDir(settings.value("CustomPreprocessorDir", QColor(0x00, 0x80, 0x00)).value<QColor>());
+    settingsWin->setComment(settings.value("CustomComment", QColor(0x80, 0x80, 0x80)).value<QColor>());
+    settingsWin->setQuotation(settings.value("CustomQuotation", QColor(0x00, 0x80, 0x00)).value<QColor>());
+    settingsWin->setLabel(settings.value("CustomLabel", QColor(0xc3, 0x34, 0x34)).value<QColor>());
+
+
 }
 
 // About

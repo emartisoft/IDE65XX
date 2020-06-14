@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QFileDialog>
 #include <QFontDialog>
+#include <QColorDialog>
 #include <QTextStream>
 #include <QSettings>
 #include <QMessageBox>
@@ -44,6 +45,23 @@ public:
     void setSIDPlayer(QString &value);
     void setSIDPlayerParameters(QString &value);
     void setCartconv(QString &value);
+
+    void setCustomBackgroundTexture(QString value);
+    void setCustomButtonTexture(QString value);
+    void setBackground(QColor c);
+    void setBrightText(QColor c);
+    void setBase(QColor c);
+    void setHighlights(QColor c);
+    void setDisable(QColor c);
+    void setOpcode(QColor c);
+    void setNumber(QColor c);
+    void setFunction(QColor c);
+    void setAssemblerDir(QColor c);
+    void setPreprocessorDir(QColor c);
+    void setComment(QColor c);
+    void setQuotation(QColor c);
+    void setLabel(QColor c);
+
 
     void setCmdLinesEnabledForDebug(bool debugdump = true, bool vicesymbols = true);
     bool getCmdLineDebugDump();
@@ -136,6 +154,38 @@ private slots:
     void setZ64K();
 
     void on_bCartconv_clicked();
+
+    void on_cTheme_currentTextChanged(const QString &arg1);
+
+    void on_bBackgroundTexture_clicked();
+
+    void on_bButtonTexture_clicked();
+
+    void on_bBackgroundColor_clicked();
+
+    void on_bBrightTextColor_clicked();
+
+    void on_bBaseColor_clicked();
+
+    void on_bHighlightsColor_clicked();
+
+    void on_bDisableColor_clicked();
+
+    void on_bOpcode_clicked();
+
+    void on_bNumber_clicked();
+
+    void on_bFunction_clicked();
+
+    void on_bAssemblerDir_clicked();
+
+    void on_bPreprocessorDir_clicked();
+
+    void on_bComment_clicked();
+
+    void on_bQuotation_clicked();
+
+    void on_bLabel_clicked();
 
 private:
     Ui::SettingsWindow *ui;

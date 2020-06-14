@@ -1,11 +1,16 @@
 #include "highlighter.h"
+#include "common.h"
 
 Highlighter::Highlighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent)
 {
+    QSettings settings(Common::appConfigDir()+"/settings.ini", QSettings::IniFormat);
+
+    // application style
+    bool styleIsCustom = settings.value("ApplicationStyle").toInt() == 5;
     HighlightingRule rule;
 
-    cmdFormat.setForeground(QColor(0x61, 0x61, 0xd0));
+    cmdFormat.setForeground((styleIsCustom)? settings.value("CustomOpcode", QColor(0x61, 0x61, 0xd0)).value<QColor>() : QColor(0x61, 0x61, 0xd0));
     cmdFormat.setFontWeight(QFont::Bold);
     const QString cmdPatterns[] = {
         // standart 6502 mnemonics
@@ -63,7 +68,7 @@ Highlighter::Highlighter(QTextDocument *parent)
     }
 
     // number
-    numberFormat.setForeground(Qt::darkCyan);
+    numberFormat.setForeground((styleIsCustom)? settings.value("CustomNumber", QColor(0x00, 0x80, 0x80)).value<QColor>() : Qt::darkCyan);
     rule.pattern = QRegularExpression(QStringLiteral("(?:\\$[0-9a-fA-F]*)|(?:\\#\\$[0-9a-fA-F]*)|(?:%[01]*)|(?:\\#[0-9]*)|(?:[0-9]*)"));
     rule.format = numberFormat;
     highlightingRules.append(rule);
@@ -71,7 +76,7 @@ Highlighter::Highlighter(QTextDocument *parent)
 
     // function
     functionFormat.setFontItalic(true);
-    functionFormat.setForeground(QColor(0xaf, 0x64, 0x00));
+    functionFormat.setForeground((styleIsCustom)? settings.value("CustomFunction", QColor(0xaf, 0x64, 0x00)).value<QColor>() : QColor(0xaf, 0x64, 0x00));
     functionFormat.setFontWeight(QFont::Bold);
     rule.pattern = QRegularExpression(QStringLiteral("\\b[A-Za-z0-9_]+(?=\\()"));
     rule.format = functionFormat;
@@ -81,14 +86,14 @@ Highlighter::Highlighter(QTextDocument *parent)
     // label
     labelFormat.setFontWeight(QFont::ExtraBold);
     labelFormat.setFontItalic(true);
-    labelFormat.setForeground(QColor(0xc3, 0x34, 0x34));
+    labelFormat.setForeground((styleIsCustom)? settings.value("CustomLabel", QColor(0xc3, 0x34, 0x34)).value<QColor>() : QColor(0xc3, 0x34, 0x34));
     rule.pattern = QRegularExpression(QStringLiteral("\\S+:"));
     rule.format = labelFormat;
     highlightingRules.append(rule);
     // end of label
 
     // assembler Directives
-    assemblerDirectiveFormat.setForeground(QColor(0xaf, 0x64, 0x00));
+    assemblerDirectiveFormat.setForeground((styleIsCustom)? settings.value("CustomAssemblerDir", QColor(0xaf, 0x64, 0x00)).value<QColor>() : QColor(0xaf, 0x64, 0x00));
     assemblerDirectiveFormat.setFontItalic(true);
     assemblerDirectiveFormat.setFontWeight(QFont::Bold);
 
@@ -158,7 +163,7 @@ Highlighter::Highlighter(QTextDocument *parent)
     // end of assembler Directives
 
     // preprocessor Directives
-    preprocessorDirectiveFormat.setForeground(Qt::darkGreen);
+    preprocessorDirectiveFormat.setForeground((styleIsCustom)? settings.value("CustomPreprocessorDir", QColor(0x00, 0x80, 0x00)).value<QColor>() : Qt::darkGreen);
     preprocessorDirectiveFormat.setFontWeight(QFont::Bold);
     const QString preprocessorDirectivePatterns[] = {
         QStringLiteral("#if [^\n]*"),
@@ -180,19 +185,19 @@ Highlighter::Highlighter(QTextDocument *parent)
     // end of preprocessor Directives
 
     // comments
-    singleLineCommentFormat.setForeground(Qt::darkGray);
+    singleLineCommentFormat.setForeground((styleIsCustom)? settings.value("CustomComment", QColor(0x80, 0x80, 0x80)).value<QColor>() : Qt::darkGray);
     rule.pattern = QRegularExpression(QStringLiteral("//[^\n]*"));
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
-    multiLineCommentFormat.setForeground(Qt::darkGray);
+    multiLineCommentFormat.setForeground((styleIsCustom)? settings.value("CustomComment", QColor(0x80, 0x80, 0x80)).value<QColor>() : Qt::darkGray);
 
     commentStartExpression = QRegularExpression(QStringLiteral("/\\*"));
     commentEndExpression = QRegularExpression(QStringLiteral("\\*/"));
     // end of comments
 
     // quotation
-    quotationFormat.setForeground(Qt::darkGreen);
+    quotationFormat.setForeground((styleIsCustom)? settings.value("CustomQuotation", QColor(0x00, 0x80, 0x00)).value<QColor>() : Qt::darkGreen);
     rule.pattern = QRegularExpression(QStringLiteral("\".*\""));
     rule.format = quotationFormat;
     highlightingRules.append(rule);

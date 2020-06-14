@@ -4,6 +4,7 @@
 #include "darkfusionstyle.h"
 #include "commodorestyle.h"
 #include "fabricstyle.h"
+#include "customstyle.h"
 #include <QTextStream>
 
 int main(int argc, char *argv[])
@@ -33,6 +34,7 @@ int main(int argc, char *argv[])
         case 2: qApp->setStyle(QStyleFactory::create("windows")); break;    // windows
         case 3: qApp->setStyle(new CommodoreStyle()); break;                // commodore
         case 4: qApp->setStyle(new FabricStyle()); break;                   // fabric
+        case 5: qApp->setStyle(new CustomStyle()); break;                   // custom
     }
 
     qApp->setPalette(QApplication::style()->standardPalette());

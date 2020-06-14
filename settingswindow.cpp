@@ -1,6 +1,8 @@
 #include "settingswindow.h"
 #include "ui_settingswindow.h"
 
+#include <QDebug>
+
 SettingsWindow::SettingsWindow(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SettingsWindow),
@@ -158,6 +160,81 @@ void SettingsWindow::setSIDPlayerParameters(QString &value)
 void SettingsWindow::setCartconv(QString &value)
 {
     ui->tCartconv->setText(value);
+}
+
+void SettingsWindow::setCustomBackgroundTexture(QString value)
+{
+    ui->fBackgroundTexture->setStyleSheet(QString("background-image: url(%1);").arg(value));
+}
+
+void SettingsWindow::setCustomButtonTexture(QString value)
+{
+    ui->fButtonTexture->setStyleSheet(QString("background-image: url(%1);").arg(value));
+}
+
+void SettingsWindow::setBackground(QColor c)
+{
+    ui->fBackground->setStyleSheet(QString("background-color: rgb(%1, %2, %3);").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+
+void SettingsWindow::setBrightText(QColor c)
+{
+    ui->fBrightText->setStyleSheet(QString("background-color: rgb(%1, %2, %3);").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+
+void SettingsWindow::setBase(QColor c)
+{
+    ui->fBase->setStyleSheet(QString("background-color: rgb(%1, %2, %3);").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+
+void SettingsWindow::setHighlights(QColor c)
+{
+    ui->fHighlights->setStyleSheet(QString("background-color: rgb(%1, %2, %3);").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+
+void SettingsWindow::setDisable(QColor c)
+{
+    ui->fDisable->setStyleSheet(QString("background-color: rgb(%1, %2, %3);").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+
+void SettingsWindow::setOpcode(QColor c)
+{
+    ui->fOpcode->setStyleSheet(QString("background-color: rgb(%1, %2, %3);").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+
+void SettingsWindow::setNumber(QColor c)
+{
+    ui->fNumber->setStyleSheet(QString("background-color: rgb(%1, %2, %3);").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+
+void SettingsWindow::setFunction(QColor c)
+{
+    ui->fFunction->setStyleSheet(QString("background-color: rgb(%1, %2, %3);").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+
+void SettingsWindow::setAssemblerDir(QColor c)
+{
+    ui->fAssemblerDir->setStyleSheet(QString("background-color: rgb(%1, %2, %3);").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+
+void SettingsWindow::setPreprocessorDir(QColor c)
+{
+    ui->fPreprocessorDir->setStyleSheet(QString("background-color: rgb(%1, %2, %3);").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+
+void SettingsWindow::setComment(QColor c)
+{
+    ui->fComment->setStyleSheet(QString("background-color: rgb(%1, %2, %3);").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+
+void SettingsWindow::setQuotation(QColor c)
+{
+    ui->fQuotation->setStyleSheet(QString("background-color: rgb(%1, %2, %3);").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+
+void SettingsWindow::setLabel(QColor c)
+{
+    ui->fLabel->setStyleSheet(QString("background-color: rgb(%1, %2, %3);").arg(c.red()).arg(c.green()).arg(c.blue()));
 }
 
 void SettingsWindow::setCmdLinesEnabledForDebug(bool debugdump, bool vicesymbols)
@@ -886,4 +963,153 @@ void SettingsWindow::on_bCartconv_clicked()
     changePathForMacOSAppFile(strFileName);
 #endif
     ui->tCartconv->setText(strFileName);
+}
+
+void SettingsWindow::on_cTheme_currentTextChanged(const QString &arg1)
+{
+    ui->gCustomTheme->setEnabled(arg1 == "Custom");
+}
+
+void SettingsWindow::on_bBackgroundTexture_clicked()
+{
+    QString strFileName = QFileDialog::getOpenFileName(this, tr("Select Background Texture"),
+                                                       Common::appLocalDir(),
+                                                       tr("Images (*.png; *.jpg)"
+                                                       ));
+    if (strFileName.isEmpty()) return;
+    setCustomBackgroundTexture(strFileName);
+    settings.setValue("CustomBackgroundTexture", strFileName);
+    settings.sync();
+    restartRequired = true;
+
+}
+
+void SettingsWindow::on_bButtonTexture_clicked()
+{
+    QString strFileName = QFileDialog::getOpenFileName(this, tr("Select Button Texture"),
+                                                       Common::appLocalDir(),
+                                                       tr("Images (*.png; *.jpg)"
+                                                       ));
+    if (strFileName.isEmpty()) return;
+    setCustomBackgroundTexture(strFileName);
+    settings.setValue("CustomButtonTexture", strFileName);
+    settings.sync();
+    restartRequired = true;
+}
+
+void SettingsWindow::on_bBackgroundColor_clicked()
+{
+    QColor c = QColorDialog::getColor(settings.value("CustomBackground").value<QColor>(), this, "Background Color");
+    setBackground(c);
+    settings.setValue("CustomBackground", c);
+    settings.sync();
+    restartRequired = true;
+}
+
+void SettingsWindow::on_bBrightTextColor_clicked()
+{
+    QColor c = QColorDialog::getColor(settings.value("CustomBrightText").value<QColor>(), this, "Bright Text Color");
+    setBrightText(c);
+    settings.setValue("CustomBrightText", c);
+    settings.sync();
+    restartRequired = true;
+}
+
+void SettingsWindow::on_bBaseColor_clicked()
+{
+    QColor c = QColorDialog::getColor(settings.value("CustomBase").value<QColor>(), this, "Base Color");
+    setBase(c);
+    settings.setValue("CustomBase", c);
+    settings.sync();
+    restartRequired = true;
+}
+
+void SettingsWindow::on_bHighlightsColor_clicked()
+{
+    QColor c = QColorDialog::getColor(settings.value("CustomHighlights").value<QColor>(), this, "Highlights Color");
+    setHighlights(c);
+    settings.setValue("CustomHighlights", c);
+    settings.sync();
+    restartRequired = true;
+}
+
+void SettingsWindow::on_bDisableColor_clicked()
+{
+    QColor c = QColorDialog::getColor(settings.value("CustomDisable").value<QColor>(), this, "Disable Color");
+    setDisable(c);
+    settings.setValue("CustomDisable", c);
+    settings.sync();
+    restartRequired = true;
+}
+
+void SettingsWindow::on_bOpcode_clicked()
+{
+    QColor c = QColorDialog::getColor(settings.value("CustomOpcode").value<QColor>(), this, "Opcode Color");
+    setOpcode(c);
+    settings.setValue("CustomOpcode", c);
+    settings.sync();
+    restartRequired = true;
+}
+
+void SettingsWindow::on_bNumber_clicked()
+{
+    QColor c = QColorDialog::getColor(settings.value("CustomNumber").value<QColor>(), this, "Number Color");
+    setNumber(c);
+    settings.setValue("CustomNumber", c);
+    settings.sync();
+    restartRequired = true;
+}
+
+void SettingsWindow::on_bFunction_clicked()
+{
+    QColor c = QColorDialog::getColor(settings.value("CustomFunction").value<QColor>(), this, "Function Color");
+    setFunction(c);
+    settings.setValue("CustomFunction", c);
+    settings.sync();
+    restartRequired = true;
+}
+
+void SettingsWindow::on_bAssemblerDir_clicked()
+{
+    QColor c = QColorDialog::getColor(settings.value("CustomAssemblerDir").value<QColor>(), this, "Assembler Directive Color");
+    setAssemblerDir(c);
+    settings.setValue("CustomAssemblerDir", c);
+    settings.sync();
+    restartRequired = true;
+}
+
+void SettingsWindow::on_bPreprocessorDir_clicked()
+{
+    QColor c = QColorDialog::getColor(settings.value("CustomPreprocessorDir").value<QColor>(), this, "Preprocessor Directive Color");
+    setPreprocessorDir(c);
+    settings.setValue("CustomPreprocessorDir", c);
+    settings.sync();
+    restartRequired = true;
+}
+
+void SettingsWindow::on_bComment_clicked()
+{
+    QColor c = QColorDialog::getColor(settings.value("CustomComment").value<QColor>(), this, "Comment Color");
+    setComment(c);
+    settings.setValue("CustomComment", c);
+    settings.sync();
+    restartRequired = true;
+}
+
+void SettingsWindow::on_bQuotation_clicked()
+{
+    QColor c = QColorDialog::getColor(settings.value("CustomQuotation").value<QColor>(), this, "Quotation Color");
+    setQuotation(c);
+    settings.setValue("CustomQuotation", c);
+    settings.sync();
+    restartRequired = true;
+}
+
+void SettingsWindow::on_bLabel_clicked()
+{
+    QColor c = QColorDialog::getColor(settings.value("CustomLabel").value<QColor>(), this, "Label Color");
+    setQuotation(c);
+    settings.setValue("CustomLabel", c);
+    settings.sync();
+    restartRequired = true;
 }

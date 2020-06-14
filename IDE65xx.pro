@@ -14,6 +14,7 @@ SOURCES += \
     codeeditor.cpp \
     commodorestyle.cpp \
     common.cpp \
+    customstyle.cpp \
     darkfusionstyle.cpp \
     delegate.cpp \
     fabricstyle.cpp \
@@ -43,6 +44,7 @@ HEADERS += \
     codeeditor.h \
     commodorestyle.h \
     common.h \
+    customstyle.h \
     darkfusionstyle.h \
     delegate.h \
     fabricstyle.h \

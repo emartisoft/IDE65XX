@@ -5,10 +5,6 @@
 #include <QPalette>
 #include <QPainterPath>
 
-QT_BEGIN_NAMESPACE
-class QPainterPath;
-QT_END_NAMESPACE
-
 class FabricStyle : public QProxyStyle
 {
     Q_OBJECT

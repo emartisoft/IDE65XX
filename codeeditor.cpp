@@ -12,8 +12,6 @@
 #include <QToolTip>
 #include "hint.h"
 
-#include <QDebug>
-
 CodeEditor::CodeEditor(QWidget *parent) : BasePlainTextEdit(parent),  
     lineNumberArea(new LineNumberArea(this)),
     bookmarkImage(":/res/images/bookmark.png"),
