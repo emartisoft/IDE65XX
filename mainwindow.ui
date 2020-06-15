@@ -941,7 +941,7 @@ QTabBar::close-button:pressed {
   <widget class="QDockWidget" name="dwOpenDocument">
    <property name="minimumSize">
     <size>
-     <width>0</width>
+     <width>204</width>
      <height>113</height>
     </size>
    </property>
@@ -990,7 +990,7 @@ QTabBar::close-button:pressed {
   <widget class="QDockWidget" name="dwBookmarks">
    <property name="minimumSize">
     <size>
-     <width>0</width>
+     <width>86</width>
      <height>45</height>
     </size>
    </property>
@@ -1132,7 +1132,7 @@ QTabBar::close-button:pressed {
   <widget class="QDockWidget" name="dwMemoryViewer">
    <property name="minimumSize">
     <size>
-     <width>0</width>
+     <width>164</width>
      <height>361</height>
     </size>
    </property>
@@ -1885,6 +1885,10 @@ background-color: rgb(255, 0, 0);</string>
    </property>
   </action>
   <action name="actionCartridge_Conversion_Utility">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/res/images/cartridge.png</normaloff>:/res/images/cartridge.png</iconset>
+   </property>
    <property name="text">
     <string>Cartridge Conversion Utility</string>
    </property>
