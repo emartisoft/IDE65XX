@@ -144,16 +144,6 @@ void CodeEditor::keyReleaseEvent(QKeyEvent *event)
         emit overWriteModeChanged();
     }
 
-    if(event->key() == Qt::Key_Tab)
-    {
-        if(tabSpace)
-        {
-
-            tc.deletePreviousChar();
-            tc.insertText(QString(tabSpaceCount, ' '));
-        }
-    }
-
     if (event->key() == Qt::Key_BraceLeft) {
         tc.deletePreviousChar();
         initial_position = QPlainTextEdit::textCursor().position();
@@ -338,6 +328,7 @@ bool CodeEditor::event(QEvent *event)
     return QPlainTextEdit::event(event);
 }
 
+#include <QDebug>
 bool CodeEditor::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::KeyPress)
@@ -346,7 +337,7 @@ bool CodeEditor::eventFilter(QObject *obj, QEvent *event)
 
         if ((keyEvent->key() == Qt::Key_Tab) || (keyEvent->key() == Qt::Key_Backtab)) {
                 bool shifttab = (keyEvent->key() == Qt::Key_Backtab);
-                const QString tabChar = QChar('\t');
+                QString tabChar = (tabSpace) ? QString(tabSpaceCount, ' ') : QChar('\t');
 
                 QTextCursor tc = textCursor();
                 QString currentLineText = tc.selectedText();
@@ -358,15 +349,17 @@ bool CodeEditor::eventFilter(QObject *obj, QEvent *event)
 
                   if (shifttab)
                   {
-                      const int indentSize = tabChar == QStringLiteral("\t") ? 4 : tabChar.count();
+                      const int indentSize = tabChar == QStringLiteral("\t") ? tabSpaceCount : tabChar.count();
                       newText = currentLineText.replace(QRegularExpression(newLine + QStringLiteral("(\\t| {1,") + QString::number(indentSize) + QStringLiteral("})")), QStringLiteral("\n"));
                       newText.remove(QRegularExpression(QStringLiteral("^(\\t| {1,") + QString::number(indentSize) + QStringLiteral("})")));
+                      qDebug() << "shifttab=1";
                   }
                   else
                   {
                       newText = currentLineText.replace(QRegularExpression(QRegularExpression::escape(newLine) + QStringLiteral("$")), QStringLiteral("\n"));
                       newText.replace(newLine, QStringLiteral("\n") + tabChar).prepend(tabChar);
                       newText.remove(QRegularExpression(QStringLiteral("\\t$")));
+                      qDebug() << "shifttab=0";
                   }
 
                   tc.insertText(newText);
@@ -376,7 +369,7 @@ bool CodeEditor::eventFilter(QObject *obj, QEvent *event)
                 }
                 else if(!shifttab)
                 {
-                    tc.insertText("\t");
+                    tc.insertText(tabChar);
                 }
                 return true;
         }
