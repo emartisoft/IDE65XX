@@ -328,7 +328,6 @@ bool CodeEditor::event(QEvent *event)
     return QPlainTextEdit::event(event);
 }
 
-#include <QDebug>
 bool CodeEditor::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::KeyPress)
@@ -352,14 +351,12 @@ bool CodeEditor::eventFilter(QObject *obj, QEvent *event)
                       const int indentSize = tabChar == QStringLiteral("\t") ? tabSpaceCount : tabChar.count();
                       newText = currentLineText.replace(QRegularExpression(newLine + QStringLiteral("(\\t| {1,") + QString::number(indentSize) + QStringLiteral("})")), QStringLiteral("\n"));
                       newText.remove(QRegularExpression(QStringLiteral("^(\\t| {1,") + QString::number(indentSize) + QStringLiteral("})")));
-                      qDebug() << "shifttab=1";
                   }
                   else
                   {
                       newText = currentLineText.replace(QRegularExpression(QRegularExpression::escape(newLine) + QStringLiteral("$")), QStringLiteral("\n"));
                       newText.replace(newLine, QStringLiteral("\n") + tabChar).prepend(tabChar);
                       newText.remove(QRegularExpression(QStringLiteral("\\t$")));
-                      qDebug() << "shifttab=0";
                   }
 
                   tc.insertText(newText);
