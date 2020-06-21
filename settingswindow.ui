@@ -47,7 +47,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-582</y>
+        <y>0</y>
         <width>761</width>
         <height>1180</height>
        </rect>
@@ -153,7 +153,7 @@
        <item>
         <widget class="QCheckBox" name="cAutoCompletion">
          <property name="text">
-          <string>Activate completion without triggered</string>
+          <string>Activate completion without triggered (use CTRL + SPACE to triggered)</string>
          </property>
         </widget>
        </item>
