@@ -118,6 +118,9 @@ void CodeEditor::resizeEvent(QResizeEvent *e)
 
 void CodeEditor::keyReleaseEvent(QKeyEvent *event)
 {
+    int initial_position;
+    QTextCursor tc = textCursor();
+
     // Zoom
     if( (event->modifiers().testFlag(Qt::ControlModifier) && event->key() == Qt::Key_0)) // CTRL + 0
     {
@@ -145,10 +148,30 @@ void CodeEditor::keyReleaseEvent(QKeyEvent *event)
     {
         if(tabSpace)
         {
-            QTextCursor tc = textCursor();
+
             tc.deletePreviousChar();
             tc.insertText(QString(tabSpaceCount, ' '));
         }
+    }
+
+    if (event->key() == Qt::Key_BraceLeft) {
+        tc.deletePreviousChar();
+        initial_position = QPlainTextEdit::textCursor().position();
+        QPlainTextEdit::insertPlainText("{\n\n}");
+        tc = QPlainTextEdit::textCursor();
+
+        tc.setPosition(initial_position+2);
+        QPlainTextEdit::setTextCursor(tc);
+    }
+
+    if (event->key() == Qt::Key_ParenLeft) {
+        tc.deletePreviousChar();
+        initial_position = QPlainTextEdit::textCursor().position();
+        QPlainTextEdit::insertPlainText("()");
+        tc = QPlainTextEdit::textCursor();
+
+        tc.setPosition(initial_position+1);
+        QPlainTextEdit::setTextCursor(tc);
     }
 }
 

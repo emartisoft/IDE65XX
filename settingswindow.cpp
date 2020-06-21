@@ -989,7 +989,7 @@ void SettingsWindow::on_bButtonTexture_clicked()
                                                        tr("Images (*.png; *.jpg)"
                                                        ));
     if (strFileName.isEmpty()) return;
-    setCustomBackgroundTexture(strFileName);
+    setCustomButtonTexture(strFileName);
     settings.setValue("CustomButtonTexture", strFileName);
     settings.sync();
     restartRequired = true;
