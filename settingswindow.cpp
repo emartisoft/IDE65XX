@@ -1106,7 +1106,7 @@ void SettingsWindow::on_bQuotation_clicked()
 void SettingsWindow::on_bLabel_clicked()
 {
     QColor c = QColorDialog::getColor(settings.value("CustomLabel").value<QColor>(), this, "Label Color");
-    setQuotation(c);
+    setLabel(c);
     settings.setValue("CustomLabel", c);
     settings.sync();
     restartRequired = true;
