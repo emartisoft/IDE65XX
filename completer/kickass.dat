@@ -11,6 +11,7 @@ add(
 addAll(
 ahx
 align
+allowOverlap
 alr
 anc
 and
@@ -98,6 +99,7 @@ DARK_GREY
 dcp
 dec
 define
+dest
 dex
 dey
 disk
@@ -117,6 +119,7 @@ filemodify
 filename
 filenamespace
 fill
+fillByte
 fillword
 flags
 floor(
@@ -124,6 +127,9 @@ for
 format
 function
 get(
+getX(
+getY(
+getZ(
 getData(
 getFilename(
 getMulticolorByte(
@@ -190,6 +196,8 @@ namespace
 nop
 ora
 ORANGE
+outBin
+outPrg
 pagelength
 pc
 PerspectiveMatrix(
@@ -207,6 +215,7 @@ ply
 pow(
 print
 printnow
+prgFiles
 pseudocommand
 pseudopc
 PURPLE
@@ -240,6 +249,7 @@ ScaleMatrix(
 sec
 sed
 segment
+segments
 segmentdef
 segmentout
 sei
@@ -250,6 +260,7 @@ showInfo
 shuffle(
 shx
 shy
+sidFiles
 signum(
 sin(
 sinh(
@@ -270,6 +281,8 @@ speed
 sqrt(
 sre
 sta
+start
+startAfter
 startpage
 startSong
 storeFilesInDir
@@ -304,7 +317,8 @@ type
 var
 Vector(
 version
-wai	
+virtual
+wai
 watch
 while
 WHITE
