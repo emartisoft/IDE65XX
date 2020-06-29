@@ -2,10 +2,10 @@
 #define VERSION_H
 
 // version
-#define VER_FILEVERSION             0,1,3
-#define VER_FILEVERSION_STR         "0.1.3\0"
-#define VER_PRODUCTVERSION          0,1,3
-#define VER_PRODUCTVERSION_STR      "0.1.3\0"
+#define VER_FILEVERSION             0,1,4
+#define VER_FILEVERSION_STR         "0.1.4\0"
+#define VER_PRODUCTVERSION          0,1,4
+#define VER_PRODUCTVERSION_STR      "0.1.4\0"
 // -------
 
 #define VER_COMPANYNAME_STR         "emarti, Murat Ozdemir"
