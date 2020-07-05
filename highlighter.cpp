@@ -69,7 +69,7 @@ Highlighter::Highlighter(QTextDocument *parent)
 
     // number
     numberFormat.setForeground((styleIsCustom)? settings.value("CustomNumber", QColor(0x00, 0x80, 0x80)).value<QColor>() : Qt::darkCyan);
-    rule.pattern = QRegularExpression(QStringLiteral("(?:\\$[0-9a-fA-F]*)|(?:\\#\\$[0-9a-fA-F]*)|(?:%[01]*)|(?:\\#[0-9]*)|(?:[0-9]*)"));
+    rule.pattern = QRegularExpression(QStringLiteral("(?:\\$[0-9a-fA-F]*)|(?:\\#\\$[0-9a-fA-F]*)|(?:\\#\\%[01]*)|(?:\\%[01]*)|(?:\\#[0-9]*)|(?:\\ [0-9]*)|(?:\\([0-9]*\\))"));
     rule.format = numberFormat;
     highlightingRules.append(rule);
     // end of number
